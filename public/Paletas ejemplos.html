@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paletas de color — Sonrisa Dental</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  body[data-paleta="sereno"] {
+    --bg: #F4F8FB;
+    --surface: #FFFFFF;
+    --surface-2: #EDF4F9;
+    --text: #173042;
+    --muted: #5C7392;
+    --primary: #1685B8;
+    --primary-strong: #0F6E9C;
+    --on-primary: #FFFFFF;
+    --accent: #34D3B8;
+    --border: #E1E9F1;
+    --ring: rgba(22, 133, 184, 0.28);
+    --shadow: 0 10px 30px rgba(23, 48, 66, 0.08);
+    --success: #16A34A;
+    --warning: #D97706;
+    --danger: #DC2626;
+    --info: #1685B8;
+  }
+
+  body[data-paleta="menta"] {
+    --bg: #FBF7F1;
+    --surface: #FFFFFF;
+    --surface-2: #F3EFE6;
+    --text: #33443B;
+    --muted: #6E7B72;
+    --primary: #2F9E8F;
+    --primary-strong: #238277;
+    --on-primary: #FFFFFF;
+    --accent: #E0A458;
+    --border: #EDE4D6;
+    --ring: rgba(47, 158, 143, 0.28);
+    --shadow: 0 10px 30px rgba(120, 95, 55, 0.10);
+    --success: #2E8B57;
+    --warning: #C7790F;
+    --danger: #C0392B;
+    --info: #2F9E8F;
+  }
+
+  body[data-paleta="noche"] {
+    --bg: #0E1526;
+    --surface: #16203A;
+    --surface-2: #1C2947;
+    --text: #F1F5F9;
+    --muted: #8A97B5;
+    --primary: #D4AF37;
+    --primary-strong: #B8952B;
+    --on-primary: #1A1405;
+    --accent: #60A5FA;
+    --border: #24304D;
+    --ring: rgba(212, 175, 55, 0.35);
+    --shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+    --success: #34D399;
+    --warning: #FBBF24;
+    --danger: #F87171;
+    --info: #60A5FA;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background .35s ease, color .35s ease;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  /* ── Selector de paletas ─────────────────────────── */
+  .selector {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 14px 18px;
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    transition: background .35s ease, border-color .35s ease;
+  }
+  .selector .label {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    letter-spacing: .04em; text-transform: uppercase; margin-right: auto;
+  }
+  .paleta-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: transparent; border: 1.5px solid var(--border);
+    color: var(--text); font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    transition: all .25s ease;
+  }
+  .paleta-btn .swatch { display: inline-flex; }
+  .paleta-btn .swatch span { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+  .paleta-btn .swatch span + span { margin-left: -5px; border: 2px solid var(--surface); }
+  .paleta-btn:hover { border-color: var(--primary); }
+  .paleta-btn.activa {
+    border-color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 14%, transparent);
+    color: var(--primary);
+  }
+
+  /* ── Header de la muestra ────────────────────────── */
+  .site-header {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    transition: background .35s ease, border-color .35s ease;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 16px; font-weight: 800;
+  }
+  .logo-badge {
+    width: 38px; height: 38px; border-radius: 12px;
+    display: grid; place-items: center; font-size: 19px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: var(--on-primary);
+  }
+  .site-nav { display: flex; gap: 4px; margin-left: auto; align-items: center; flex-wrap: wrap; }
+  .nav-link {
+    background: transparent; border: none; color: var(--muted);
+    font-family: inherit; font-size: 13.5px; font-weight: 600;
+    padding: 8px 12px; border-radius: 10px; cursor: pointer; transition: color .2s;
+  }
+  .nav-link:hover { color: var(--primary); }
+
+  /* ── Hero ────────────────────────────────────────── */
+  .hero {
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, var(--surface), var(--surface-2));
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 44px 36px;
+    margin-bottom: 24px;
+    transition: background .35s ease, border-color .35s ease;
+  }
+  .hero::after {
+    content: ''; position: absolute; right: -70px; top: -70px;
+    width: 260px; height: 260px; border-radius: 50%;
+    background: radial-gradient(circle, var(--ring), transparent 70%);
+  }
+  .eyebrow {
+    display: inline-block; font-size: 12px; font-weight: 700;
+    color: var(--primary); letter-spacing: .08em; text-transform: uppercase;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+    padding: 5px 12px; border-radius: 999px; margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 42px); line-height: 1.15; font-weight: 800;
+    max-width: 600px; margin-bottom: 12px;
+  }
+  .hero h1 em { font-style: normal; color: var(--primary); }
+  .hero p.sub {
+    font-size: 15.5px; color: var(--muted); line-height: 1.6; max-width: 520px; margin-bottom: 24px;
+  }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .btn {
+    font-family: inherit; font-size: 14.5px; font-weight: 700;
+    padding: 12px 22px; border-radius: 12px; cursor: pointer;
+    transition: all .25s ease;
+  }
+  .btn-primario {
+    background: var(--primary); color: var(--on-primary); border: none;
+    box-shadow: 0 6px 18px var(--ring);
+  }
+  .btn-primario:hover { background: var(--primary-strong); transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent; color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* ── Stats / badges ──────────────────────────────── */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px; transition: all .35s ease;
+  }
+  .stat .num { font-size: 26px; font-weight: 800; color: var(--primary); }
+  .stat .cap { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+
+  /* ── Tarjetas de servicios ───────────────────────── */
+  .section-title { font-size: 18px; font-weight: 800; margin: 8px 0 14px; }
+  .section-title span { color: var(--muted); font-weight: 600; }
+  .grid-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--primary); }
+  .card .ico {
+    width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 22px;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    margin-bottom: 14px;
+  }
+  .card h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 14px; }
+  .card a {
+    font-size: 13px; font-weight: 700; color: var(--primary); text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .card a:hover { color: var(--primary-strong); }
+
+  /* ── Fila de cita ────────────────────────────────── */
+  .cita {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 10px;
+    transition: background .35s ease, border-color .35s ease;
+  }
+  .cita .pac { font-weight: 700; font-size: 14.5px; }
+  .cita .serv { font-size: 12.5px; color: var(--muted); }
+  .cita .fecha { font-size: 12.5px; color: var(--muted); margin-left: auto; text-align: right; }
+  .badge {
+    font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .badge.verde   { color: var(--success); background: color-mix(in srgb, var(--success) 14%, transparent); }
+  .badge.ambar   { color: var(--warning); background: color-mix(in srgb, var(--warning) 14%, transparent); }
+  .badge.azul    { color: var(--info);    background: color-mix(in srgb, var(--info) 14%, transparent); }
+  .badge.rojo    { color: var(--danger);  background: color-mix(in srgb, var(--danger) 14%, transparent); }
+
+  /* ── Formulario ──────────────────────────────────── */
+  .form-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px; margin-bottom: 28px;
+    transition: all .35s ease;
+  }
+  .form-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 16px; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  .campo label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+  .campo input, .campo select {
+    width: 100%; font-family: inherit; font-size: 14px; color: var(--text);
+    background: var(--bg); border: 1.5px solid var(--border);
+    border-radius: 11px; padding: 11px 13px; outline: none;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .campo select option { background: var(--surface); color: var(--text); }
+  .campo input:focus, .campo select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--ring);
+  }
+  .campo input::placeholder { color: var(--muted); opacity: .6; }
+
+  /* ── Muestras de bordes ──────────────────────────── */
+  .borders { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 12px; }
+  .border-sample {
+    background: var(--surface); border-radius: 14px; padding: 18px; text-align: center;
+    font-size: 12.5px; font-weight: 600; color: var(--muted);
+  }
+  .bs-solid   { border: 2px solid var(--border); }
+  .bs-primary { border: 2px solid var(--primary); }
+  .bs-dashed  { border: 2px dashed var(--primary); }
+  .bs-ring    { border: 2px solid transparent; box-shadow: 0 0 0 4px var(--ring); }
+
+  /* ── Swatches finales ────────────────────────────── */
+  .swatches {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; margin-top: 28px;
+    transition: all .35s ease;
+  }
+  .swatches h3 { font-size: 15px; font-weight: 800; margin-bottom: 14px; }
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .chip {
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+    background: var(--bg);
+  }
+  .chip .color { height: 54px; }
+  .chip .meta { padding: 8px 10px; font-size: 11.5px; }
+  .chip .meta b { display: block; font-size: 11.5px; }
+  .chip .meta code { color: var(--muted); font-family: 'Consolas', monospace; font-size: 11px; }
+
+  .foot { margin-top: 28px; font-size: 12px; color: var(--muted); text-align: center; }
+
+  @media (max-width: 760px) {
+    .grid-cards, .stats, .borders { grid-template-columns: 1fr 1fr; }
+    .fields { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    .grid-cards, .stats, .borders { grid-template-columns: 1fr; }
+    .site-nav { margin-left: 0; }
+  }
+</style>
+</head>
+<body data-paleta="sereno">
+  <div class="wrap">
+
+    <!-- Selector -->
+    <div class="selector">
+      <span class="label">Paleta activa</span>
+      <button class="paleta-btn activa" data-paleta="sereno">
+        <span class="swatch"><span style="background:#F4F8FB"></span><span style="background:#1685B8"></span><span style="background:#34D3B8"></span></span>
+        Cielo Sereno
+      </button>
+      <button class="paleta-btn" data-paleta="menta">
+        <span class="swatch"><span style="background:#FBF7F1"></span><span style="background:#2F9E8F"></span><span style="background:#E0A458"></span></span>
+        Menta Natural
+      </button>
+      <button class="paleta-btn" data-paleta="noche">
+        <span class="swatch"><span style="background:#0E1526"></span><span style="background:#D4AF37"></span><span style="background:#60A5FA"></span></span>
+        Noche Elegante
+      </button>
+    </div>
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="logo">
+        <div class="logo-badge">🦷</div>
+        Sonrisa Dental
+      </div>
+      <nav class="site-nav">
+        <button class="nav-link">Inicio</button>
+        <button class="nav-link">Servicios</button>
+        <button class="nav-link">Nosotros</button>
+        <button class="btn btn-primario" style="padding:9px 18px;font-size:13.5px">Agendar cita</button>
+      </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <span class="eyebrow">Clínica odontológica</span>
+      <h1>Tu sonrisa, en las <em>mejores manos</em></h1>
+      <p class="sub">Odontología general, estética y especialidades con tecnología de vanguardia y un trato cercano que te hace sentir en confianza desde la primera visita.</p>
+      <div class="btn-row">
+        <button class="btn btn-primario">Agendar mi cita</button>
+        <button class="btn btn-ghost">Conócenos</button>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="num">+15</div><div class="cap">Años de experiencia</div></div>
+      <div class="stat"><div class="num">12k</div><div class="cap">Pacientes atendidos</div></div>
+      <div class="stat"><div class="num">4.9 ★</div><div class="cap">Valoración promedio</div></div>
+    </div>
+
+    <!-- Servicios -->
+    <h3 class="section-title">Nuestros servicios <span>— tarjetas y bordes</span></h3>
+    <div class="grid-cards">
+      <div class="card">
+        <div class="ico">🪥</div>
+        <h3>Odontopediatría</h3>
+        <p>Cuidado preventivo y lúdico para los más pequeños, con un trato que elimina el miedo al dentista.</p>
+        <a href="#">Ver más →</a>
+      </div>
+      <div class="card">
+        <div class="ico">🦷</div>
+        <h3>Ortodoncia</h3>
+        <p>Brackets estéticos y alineadores invisibles para una sonrisa perfectamente alineada.</p>
+        <a href="#">Ver más →</a>
+      </div>
+      <div class="card">
+        <div class="ico">✨</div>
+        <h3>Implantes dentales</h3>
+        <p>Reemplazo fijo de titanio de alta gama para recuperar función y estética completa.</p>
+        <a href="#">Ver más →</a>
+      </div>
+    </div>
+
+    <!-- Citas -->
+    <h3 class="section-title">Próximas citas <span>— badges y filas</span></h3>
+    <div class="cita">
+      <div>
+        <div class="pac">María Fernández</div>
+        <div class="serv">Ortodoncia · Control de brackets</div>
+      </div>
+      <span class="badge ambar">Pendiente</span>
+      <div class="fecha">04 ago · 10:00</div>
+    </div>
+    <div class="cita">
+      <div>
+        <div class="pac">Carlos Mendoza</div>
+        <div class="serv">Limpieza dental profunda</div>
+      </div>
+      <span class="badge verde">Confirmada</span>
+      <div class="fecha">05 ago · 15:00</div>
+    </div>
+    <div class="cita">
+      <div>
+        <div class="pac">Ana Lucía Torres</div>
+        <div class="serv">Endodoncia diente 36</div>
+      </div>
+      <span class="badge azul">Completada</span>
+      <div class="fecha">02 ago · 11:30</div>
+    </div>
+    <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+      <span class="badge rojo">Cancelada</span>
+      <span class="badge verde">Pagada</span>
+      <span class="badge ambar">En espera</span>
+      <span class="badge azul">Info</span>
+    </div>
+
+    <!-- Formulario -->
+    <div class="form-box" style="margin-top:24px">
+      <h3>Agendar una cita — formulario</h3>
+      <form>
+        <div class="fields">
+          <div class="campo">
+            <label>Nombre completo</label>
+            <input type="text" placeholder="Escribe tu nombre">
+          </div>
+          <div class="campo">
+            <label>Servicio</label>
+            <select>
+              <option>Odontopediatría</option>
+              <option>Ortodoncia</option>
+              <option>Implantes dentales</option>
+              <option>Endodoncia</option>
+            </select>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primario">Enviar solicitud</button>
+      </form>
+    </div>
+
+    <!-- Bordes -->
+    <h3 class="section-title">Muestras de bordes y énfasis</h3>
+    <div class="borders">
+      <div class="border-sample bs-solid">Borde estándar</div>
+      <div class="border-sample bs-primary">Borde primario</div>
+      <div class="border-sample bs-dashed">Borde punteado</div>
+      <div class="border-sample bs-ring">Focus ring</div>
+    </div>
+
+    <!-- Swatches -->
+    <div class="swatches">
+      <h3>Paleta completa</h3>
+      <div class="swatch-grid">
+        <div class="chip"><div class="color" data-var="bg"></div><div class="meta"><b>Fondo</b><code>var(--bg)</code></div></div>
+        <div class="chip"><div class="color" data-var="surface"></div><div class="meta"><b>Superficie</b><code>var(--surface)</code></div></div>
+        <div class="chip"><div class="color" data-var="text"></div><div class="meta"><b>Texto</b><code>var(--text)</code></div></div>
+        <div class="chip"><div class="color" data-var="muted"></div><div class="meta"><b>Texto secundario</b><code>var(--muted)</code></div></div>
+        <div class="chip"><div class="color" data-var="primary"></div><div class="meta"><b>Primario</b><code>var(--primary)</code></div></div>
+        <div class="chip"><div class="color" data-var="primary-strong"></div><div class="meta"><b>Primario hover</b><code>var(--primary-strong)</code></div></div>
+        <div class="chip"><div class="color" data-var="accent"></div><div class="meta"><b>Acento</b><code>var(--accent)</code></div></div>
+        <div class="chip"><div class="color" data-var="border"></div><div class="meta"><b>Borde</b><code>var(--border)</code></div></div>
+        <div class="chip"><div class="color" data-var="success"></div><div class="meta"><b>Éxito</b><code>var(--success)</code></div></div>
+        <div class="chip"><div class="color" data-var="warning"></div><div class="meta"><b>Aviso</b><code>var(--warning)</code></div></div>
+        <div class="chip"><div class="color" data-var="danger"></div><div class="meta"><b>Error</b><code>var(--danger)</code></div></div>
+      </div>
+    </div>
+
+    <p class="foot">Sonrisa Dental — selector de paletas para decidir la nueva identidad visual.</p>
+  </div>
+
+  <script>
+    const VARS = ['bg','surface','text','muted','primary','primary-strong','accent','border','success','warning','danger'];
+    const buttons = document.querySelectorAll('.paleta-btn');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.body.dataset.paleta = btn.dataset.paleta;
+        buttons.forEach(b => b.classList.toggle('activa', b === btn));
+        VARS.forEach(v => {
+          const el = document.querySelector(`.color[data-var="${v}"]`);
+          if (el) {
+            const val = getComputedStyle(document.body).getPropertyValue('--' + v).trim();
+            el.style.background = val;
+            el.closest('.chip').querySelector('code').textContent = val.toUpperCase();
+          }
+        });
+      });
+    });
+
+    buttons[0].click();
+  </script>
+</body>
+</html>
