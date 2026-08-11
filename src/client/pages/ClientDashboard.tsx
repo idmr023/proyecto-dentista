@@ -187,18 +187,18 @@ export default function ClientDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-white/[0.06]">
+    <div className="min-h-screen bg-[#F0F7FF] text-[#1A2E3D]">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-[#D6E8F5]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center text-lg font-black">
-              T
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7CC4EB] to-[#5AB0E4] flex items-center justify-center text-lg font-black text-white shadow-md">
+              🦷
             </div>
             <div>
-              <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
-                Twilight Dental
+              <h1 className="text-lg font-bold text-[#1A2E3D]">
+                Sonrisa Dental
               </h1>
-              <p className="text-[10px] text-slate-500 uppercase tracking-widest">Panel del Paciente</p>
+              <p className="text-[10px] text-[#5A7A94] uppercase tracking-widest">Panel del Paciente</p>
             </div>
           </div>
 
@@ -209,13 +209,13 @@ export default function ClientDashboard() {
                 onClick={() => setTab(t.key)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                   tab === t.key
-                    ? 'bg-white/[0.08] text-cyan-400 shadow-lg shadow-cyan-500/10'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+                    ? 'bg-[#7CC4EB]/20 text-[#1A2E3D] font-bold shadow-sm'
+                    : 'text-[#5A7A94] hover:text-[#1A2E3D] hover:bg-[#E8F2FA]'
                 }`}
               >
                 {t.label}
                 {t.key === 'shop' && cart.length > 0 && (
-                  <span className="ml-2 px-1.5 py-0.5 text-[10px] bg-cyan-500/20 text-cyan-400 rounded-full">
+                  <span className="ml-2 px-1.5 py-0.5 text-[10px] bg-[#7CC4EB] text-white rounded-full">
                     {cart.reduce((s, c) => s + c.qty, 0)}
                   </span>
                 )}
@@ -225,15 +225,15 @@ export default function ClientDashboard() {
 
           <div className="flex items-center gap-3">
             <div className="hidden sm:block text-right">
-              <p className="text-sm font-medium text-slate-200">{user?.name}</p>
-              <p className="text-xs text-slate-500">{user?.email}</p>
+              <p className="text-sm font-medium text-[#1A2E3D]">{user?.name}</p>
+              <p className="text-xs text-[#5A7A94]">{user?.email}</p>
             </div>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center text-sm font-bold">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#7CC4EB] to-[#F7B8D1] flex items-center justify-center text-sm font-bold text-white">
               {user?.name?.[0]?.toUpperCase() || 'U'}
             </div>
             <button
               onClick={logout}
-              className="p-2 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all"
+              className="p-2 rounded-xl text-[#5A7A94] hover:text-red-500 hover:bg-red-500/10 transition-all"
               title="Cerrar sesión"
             >
               <LogOut size={18} />
@@ -241,20 +241,20 @@ export default function ClientDashboard() {
           </div>
         </div>
 
-        <div className="md:hidden flex overflow-x-auto border-t border-white/[0.04] px-4 gap-1 py-2">
+        <div className="md:hidden flex overflow-x-auto border-t border-[#D6E8F5] px-4 gap-1 py-2">
           {tabs.map((t) => (
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
               className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-medium transition-all ${
                 tab === t.key
-                  ? 'bg-white/[0.08] text-cyan-400'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#7CC4EB]/20 text-[#1A2E3D] font-bold'
+                  : 'text-[#5A7A94] hover:text-[#1A2E3D]'
               }`}
             >
               {t.label}
               {t.key === 'shop' && cart.length > 0 && (
-                <span className="ml-1.5 px-1 py-0.5 text-[9px] bg-cyan-500/20 text-cyan-400 rounded-full">
+                <span className="ml-1.5 px-1 py-0.5 text-[9px] bg-[#7CC4EB] text-white rounded-full">
                   {cart.reduce((s, c) => s + c.qty, 0)}
                 </span>
               )}

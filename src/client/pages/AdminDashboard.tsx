@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../lib/api';
+import { Logo } from '../components/ui/Logo';
 import {
   LayoutDashboard, Stethoscope, Calendar, ShoppingBag,
   FileText, Users, Settings, LogOut, ChevronRight, Menu, X,
@@ -135,11 +136,7 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-900/95 backdrop-blur-xl border-r border-white/[0.06] transform transition-transform duration-300 lg:translate-x-0 lg:static lg:z-auto ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="flex items-center gap-3 px-6 h-20 border-b border-white/[0.06]">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-400 flex items-center justify-center text-xl">🦷</div>
-          <div>
-            <span className="font-bold text-white text-sm block">Twilight Dental</span>
-            <span className="text-[10px] text-cyan-400 font-semibold">Panel Admin</span>
-          </div>
+          <Logo size="md" />
         </div>
         <nav className="p-4 space-y-1">
           {navItems.map(item => (

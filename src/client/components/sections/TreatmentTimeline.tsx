@@ -162,10 +162,10 @@ export default function TreatmentTimeline() {
   const progress = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <section ref={containerRef} className="relative min-h-[180vh] bg-slate-950 py-32 px-6">
+    <section ref={containerRef} className="relative min-h-[180vh] bg-[#F0F7FF] py-32 px-6">
       {/* Background accents */}
-      <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-violet-600/5 rounded-full blur-[120px]" />
-      <div className="absolute bottom-1/3 left-0 w-[400px] h-[400px] bg-cyan-600/5 rounded-full blur-[100px]" />
+      <div className="absolute top-1/3 right-0 w-[500px] h-[500px] bg-[#F7B8D1]/20 rounded-full blur-[120px]" />
+      <div className="absolute bottom-1/3 left-0 w-[400px] h-[400px] bg-[#7CC4EB]/20 rounded-full blur-[100px]" />
 
       <div className="max-w-5xl mx-auto">
         {/* Section header */}
@@ -174,7 +174,7 @@ export default function TreatmentTimeline() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block text-xs font-bold text-cyan-400 tracking-[0.2em] uppercase mb-4"
+            className="inline-block text-xs font-bold text-[#5AB0E4] tracking-[0.2em] uppercase mb-4"
           >
             Flujo de Atención
           </motion.span>
@@ -183,10 +183,10 @@ export default function TreatmentTimeline() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-5xl font-black text-white tracking-tight"
+            className="text-3xl md:text-5xl font-black text-[#1A2E3D] tracking-tight"
           >
             De la recepción a la{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7CC4EB] to-[#5AB0E4]">
               evolución
             </span>
           </motion.h2>
@@ -194,14 +194,6 @@ export default function TreatmentTimeline() {
 
         {/* Timeline */}
         <div className="relative">
-          {/* SVG Line */}
-          <motion.div
-            style={{ pathLength: progress }}
-            className="absolute inset-0 pointer-events-none"
-          >
-            <TimelineLine progress={progress.get()} />
-          </motion.div>
-
           {/* Nodes */}
           <div className="relative space-y-24 md:space-y-32">
             {nodes.map((node, index) => (
@@ -225,34 +217,35 @@ function TimelineNodeWrapper({ node, index, progress }: { node: TimelineNode; in
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className={`relative flex items-center gap-8 ${node.align === 'left' ? 'flex-row' : 'flex-row-reverse'} w-full`}
     >
-      <div className="flex-1">
+      <div className={`flex-1 ${node.align === 'left' ? 'text-right' : 'text-left'}`}>
         <motion.div
           initial={{ opacity: 0, x: node.align === 'left' ? -40 : 40 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="relative backdrop-blur-xl bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 md:p-8 shadow-2xl"
+          className="relative backdrop-blur-xl bg-white border border-[#D6E8F5] rounded-2xl p-6 md:p-8 shadow-xl"
         >
           <div className={`flex items-center gap-3 mb-4 ${node.align === 'left' ? 'justify-end' : ''}`}>
             <div className="text-2xl">{node.icon}</div>
             <div className={node.align === 'left' ? 'text-right' : ''}>
-              <span className="text-[10px] font-bold text-cyan-400 tracking-widest uppercase block">
+              <span className="text-[10px] font-bold text-[#5AB0E4] tracking-widest uppercase block">
                 Paso {node.id}
               </span>
-              <h3 className="text-lg md:text-xl font-black text-white">{node.title}</h3>
+              <h3 className="text-lg md:text-xl font-black text-[#1A2E3D]">{node.title}</h3>
             </div>
           </div>
-          <p className="text-xs font-semibold text-slate-400 mb-2">{node.subtitle}</p>
-          <p className="text-sm text-slate-500 leading-relaxed">{node.description}</p>
+          <p className="text-xs font-semibold text-[#5A7A94] mb-2">{node.subtitle}</p>
+          <p className="text-sm text-[#5A7A94] leading-relaxed">{node.description}</p>
         </motion.div>
       </div>
 
       <div className="relative z-10 flex-shrink-0">
         <motion.div
-          className="w-12 h-12 rounded-full flex items-center justify-center bg-slate-800 border border-slate-700"
+          className="w-12 h-12 rounded-full flex items-center justify-center bg-white border border-[#D6E8F5]"
           whileInView={{
-            background: 'linear-gradient(135deg, #06b6d4, #8b5cf6)',
-            boxShadow: '0 0 20px rgba(34,211,238,0.3)',
+            background: 'linear-gradient(135deg, #7CC4EB, #5AB0E4)',
+            boxShadow: '0 0 20px rgba(124,196,235,0.4)',
+            borderColor: '#7CC4EB'
           }}
           viewport={{ once: false, margin: '-200px' }}
           transition={{ duration: 0.5 }}

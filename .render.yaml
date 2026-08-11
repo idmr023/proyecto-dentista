@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: dentista-api
+    env: node
+    buildCommand: npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_ACCESS_SECRET
+        value: "render-jwt-access-secret-2026"
+      - key: JWT_REFRESH_SECRET
+        value: "render-jwt-refresh-secret-2026"
+    disk:
+      - name: database
+        mountPath: /app/database

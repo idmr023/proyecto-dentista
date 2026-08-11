@@ -8,9 +8,9 @@ import ToothLoader from './components/ui/ToothLoader';
 
 function LoadingScreen() {
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center relative overflow-hidden">
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-600/8 rounded-full blur-[150px]" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-violet-600/6 rounded-full blur-[120px]" />
+    <div className="min-h-screen bg-[#F0F7FF] text-[#1A2E3D] flex items-center justify-center relative overflow-hidden">
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#7CC4EB]/15 rounded-full blur-[150px]" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#F7B8D1]/20 rounded-full blur-[120px]" />
       <ToothLoader />
     </div>
   );

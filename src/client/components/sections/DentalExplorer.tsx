@@ -48,11 +48,11 @@ const zones: ToothZone[] = [
 ];
 
 const zoneColors: Record<string, { base: string; lit: string; glow: string; grad: [string, string] }> = {
-  frontales: { base: '#1e293b', lit: '#22d3ee', glow: '#06b6d4', grad: ['#0e7490', '#22d3ee'] },
-  muelas:    { base: '#1e293b', lit: '#a78bfa', glow: '#8b5cf6', grad: ['#6d28d9', '#a78bfa'] },
-  encias:    { base: '#1e293b', lit: '#34d399', glow: '#10b981', grad: ['#059669', '#34d399'] },
-  implantes: { base: '#1e293b', lit: '#fbbf24', glow: '#f59e0b', grad: ['#d97706', '#fbbf24'] },
-  ortodoncia:{ base: '#1e293b', lit: '#fb7185', glow: '#f43f5e', grad: ['#e11d48', '#fb7185'] },
+  frontales: { base: '#E8F2FA', lit: '#5AB0E4', glow: '#7CC4EB', grad: ['#7CC4EB', '#5AB0E4'] },
+  muelas:    { base: '#E8F2FA', lit: '#945A7A', glow: '#F4A6C9', grad: ['#945A7A', '#F4A6C9'] },
+  encias:    { base: '#E8F2FA', lit: '#34D399', glow: '#10B981', grad: ['#059669', '#34D399'] },
+  implantes: { base: '#E8F2FA', lit: '#EAB308', glow: '#FDE68A', grad: ['#CA8A04', '#EAB308'] },
+  ortodoncia:{ base: '#E8F2FA', lit: '#F4A6C9', glow: '#ED8AB5', grad: ['#ED8AB5', '#F4A6C9'] },
 };
 
 /* --- Anatomical Tooth Paths --- */
@@ -284,8 +284,8 @@ export default function DentalExplorer() {
   const activeData = zones.find(z => z.id === activeZone);
 
   return (
-    <section className="relative min-h-screen bg-slate-950 flex items-center justify-center py-20 px-6">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-cyan-600/5 rounded-full blur-[150px]" />
+    <section className="relative min-h-screen bg-[#F0F7FF] flex items-center justify-center py-20 px-6">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#7CC4EB]/15 rounded-full blur-[150px]" />
 
       <div className="max-w-7xl w-full mx-auto">
         <div className="text-center mb-16">
@@ -293,7 +293,7 @@ export default function DentalExplorer() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block text-xs font-bold text-cyan-400 tracking-[0.2em] uppercase mb-4"
+            className="inline-block text-xs font-bold text-[#5AB0E4] tracking-[0.2em] uppercase mb-4"
           >
             Explorador Dental Interactivo
           </motion.span>
@@ -302,17 +302,17 @@ export default function DentalExplorer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-5xl font-black text-white tracking-tight"
+            className="text-3xl md:text-5xl font-black text-[#1A2E3D] tracking-tight"
           >
             Pasa el cursor sobre la{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">dentadura</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#7CC4EB] to-[#5AB0E4]">dentadura</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-slate-500 mt-3 text-sm"
+            className="text-[#5A7A94] mt-3 text-sm"
           >
             Cada zona ilumina su especialidad correspondiente
           </motion.p>
@@ -325,7 +325,7 @@ export default function DentalExplorer() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative bg-white/[0.02] border border-white/[0.05] rounded-3xl p-6 md:p-10 backdrop-blur-xl"
+            className="relative bg-white border border-[#D6E8F5] rounded-3xl p-6 md:p-10 shadow-xl"
           >
             <svg
               viewBox="0 0 690 480"
@@ -335,17 +335,17 @@ export default function DentalExplorer() {
             >
               <defs>
                 <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.015)" strokeWidth="0.5"/>
+                  <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#D6E8F5" strokeWidth="0.5"/>
                 </pattern>
                 <filter id="globalGlow" x="-50%" y="-50%" width="200%" height="200%">
                   <feGaussianBlur stdDeviation="4" result="blur"/>
                   <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
                 </filter>
               </defs>
-              <rect width="690" height="480" fill="url(#grid)"/>
+              <rect width="690" height="480" fill="url(#grid)" opacity="0.4"/>
 
               {/* Upper arch label */}
-              <text x="345" y="16" textAnchor="middle" className="text-[9px] font-bold" fill="rgba(255,255,255,0.15)">
+              <text x="345" y="16" textAnchor="middle" className="text-[9px] font-bold" fill="#5A7A94">
                 ARCADA SUPERIOR (MAXILAR)
               </text>
 
@@ -364,7 +364,7 @@ export default function DentalExplorer() {
                         x={t.x} y={56}
                         textAnchor="middle"
                         className="text-[8px] font-bold select-none"
-                        fill={isActive ? zoneColors[t.zone].lit : 'rgba(255,255,255,0.18)'}
+                        fill={isActive ? zoneColors[t.zone].lit : '#5A7A94'}
                         style={{ transition: 'fill 0.3s ease' }}
                       >
                         {t.label}
@@ -375,10 +375,10 @@ export default function DentalExplorer() {
               </g>
 
               {/* Center line */}
-              <line x1="50" y1="238" x2="640" y2="238" stroke="rgba(34,211,238,0.08)" strokeWidth="0.5" strokeDasharray="4,6"/>
+              <line x1="50" y1="238" x2="640" y2="238" stroke="#7CC4EB" strokeWidth="0.5" strokeDasharray="4,6" opacity="0.4"/>
 
               {/* Lower arch label */}
-              <text x="345" y="256" textAnchor="middle" className="text-[9px] font-bold" fill="rgba(255,255,255,0.15)">
+              <text x="345" y="256" textAnchor="middle" className="text-[9px] font-bold" fill="#5A7A94">
                 ARCADA INFERIOR (MANDIBULAR)
               </text>
 
@@ -400,7 +400,7 @@ export default function DentalExplorer() {
                         x={t.x} y={140}
                         textAnchor="middle"
                         className="text-[8px] font-bold select-none"
-                        fill={isActive ? zoneColors[t.zone].lit : 'rgba(255,255,255,0.18)'}
+                        fill={isActive ? zoneColors[t.zone].lit : '#5A7A94'}
                         style={{ transition: 'fill 0.3s ease' }}
                       >
                         {t.label}
@@ -422,39 +422,39 @@ export default function DentalExplorer() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -30 }}
                   transition={{ duration: 0.25 }}
-                  className="absolute inset-0 backdrop-blur-xl bg-white/[0.03] border border-white/[0.06] rounded-3xl p-8 shadow-2xl"
+                  className="absolute inset-0 backdrop-blur-xl bg-white border border-[#D6E8F5] rounded-3xl p-8 shadow-xl"
                   style={{
-                    boxShadow: `0 0 40px ${zoneColors[activeData.id].glow}15, 0 20px 60px rgba(0,0,0,0.4)`,
-                    borderColor: `${zoneColors[activeData.id].lit}30`,
+                    boxShadow: `0 0 40px ${zoneColors[activeData.id].glow}30, 0 20px 60px rgba(26,46,61,0.06)`,
+                    borderColor: `${zoneColors[activeData.id].lit}`,
                   }}
                 >
                   <div className="flex items-center gap-4 mb-6">
                     <div
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-lg"
-                      style={{ background: `linear-gradient(135deg, ${zoneColors[activeData.id].grad[0]}40, ${zoneColors[activeData.id].grad[1]}20)`, boxShadow: `0 0 20px ${zoneColors[activeData.id].glow}20` }}
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-md text-white"
+                      style={{ background: `linear-gradient(135deg, ${zoneColors[activeData.id].grad[0]}, ${zoneColors[activeData.id].grad[1]})` }}
                     >
                       {activeData.icon}
                     </div>
                     <div>
-                      <h3 className="text-xl font-black text-white">{activeData.label}</h3>
-                      <p className="text-xs text-slate-400 mt-0.5">Zona explorada</p>
+                      <h3 className="text-xl font-black text-[#1A2E3D]">{activeData.label}</h3>
+                      <p className="text-xs text-[#5A7A94] mt-0.5">Zona explorada</p>
                     </div>
                   </div>
 
-                  <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                  <p className="text-[#1A2E3D] text-sm leading-relaxed mb-6 font-medium">
                     {activeData.description}
                   </p>
 
                   <div className="space-y-2">
-                    <span className="text-[10px] font-bold text-slate-500 tracking-widest uppercase">Tratamientos disponibles</span>
+                    <span className="text-[10px] font-bold text-[#5A7A94] tracking-widest uppercase">Tratamientos disponibles</span>
                     <div className="flex flex-wrap gap-2">
                       {activeData.services.map((service, i) => (
                         <span
                           key={i}
-                          className="text-xs px-3 py-1.5 rounded-lg border"
+                          className="text-xs px-3 py-1.5 rounded-lg border font-semibold"
                           style={{
-                            background: `${zoneColors[activeData.id].glow}08`,
-                            borderColor: `${zoneColors[activeData.id].lit}15`,
+                            background: `${zoneColors[activeData.id].glow}20`,
+                            borderColor: `${zoneColors[activeData.id].lit}40`,
                             color: zoneColors[activeData.id].lit,
                           }}
                         >
@@ -470,13 +470,13 @@ export default function DentalExplorer() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 backdrop-blur-xl bg-white/[0.02] border border-dashed border-white/[0.06] rounded-3xl p-8 flex flex-col items-center justify-center text-center"
+                  className="absolute inset-0 backdrop-blur-xl bg-white border border-dashed border-[#D6E8F5] rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-sm"
                 >
-                  <div className="w-16 h-16 rounded-full bg-cyan-500/10 flex items-center justify-center mb-4">
-                    <span className="text-2xl">🦷</span>
+                  <div className="w-16 h-16 rounded-full bg-[#7CC4EB]/15 flex items-center justify-center mb-4 text-2xl">
+                    🦷
                   </div>
-                  <h4 className="text-white font-bold mb-1">Explora la dentadura</h4>
-                  <p className="text-slate-500 text-xs max-w-[200px]">
+                  <h4 className="text-[#1A2E3D] font-bold mb-1">Explora la dentadura</h4>
+                  <p className="text-[#5A7A94] text-xs max-w-[200px]">
                     Haz hover sobre diferentes zonas para descubrir cada especialidad
                   </p>
                 </motion.div>

@@ -12,6 +12,9 @@ import { getDb } from './db';
 
 const PORT = process.env.PORT || 4000;
 
+// Allow all origins for development (change to specific domains for production)
+res.setHeader('Access-Control-Allow-Origin', '*');
+
 const router = createRouter();
 
 // Register all routes

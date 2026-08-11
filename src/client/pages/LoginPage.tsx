@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, Mail, User, Shield, UserCheck, ArrowRight, Sparkles, Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
+import { Logo } from '../components/ui/Logo';
 
 export default function LoginPage({ onBack }: { onBack?: () => void }) {
   const { login, register } = useAuth();
@@ -111,10 +112,10 @@ export default function LoginPage({ onBack }: { onBack?: () => void }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[#F0F7FF] text-[#1A2E3D] flex items-center justify-center px-6 relative overflow-hidden">
       {/* Ambient glows */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-600/8 rounded-full blur-[150px]" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-violet-600/6 rounded-full blur-[120px]" />
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#7CC4EB]/15 rounded-full blur-[150px]" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-[#F7B8D1]/20 rounded-full blur-[120px]" />
 
       <motion.div
         initial={{ opacity: 0, y: 40 }}
@@ -127,40 +128,33 @@ export default function LoginPage({ onBack }: { onBack?: () => void }) {
           {onBack && (
             <button
               onClick={onBack}
-              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-cyan-400 transition mb-5"
+              className="inline-flex items-center gap-1.5 text-xs text-[#5A7A94] hover:text-[#5AB0E4] transition mb-5"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Volver al inicio
             </button>
           )}
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500 to-cyan-400 flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg shadow-cyan-500/20"
-          >
-            🦷
-          </motion.div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Twilight Dental</h1>
-          <p className="text-slate-500 text-sm mt-2">Sistema de Gestión Odontológica</p>
+          <div>
+            <Logo/>
+          </div>
         </div>
 
         {/* Card */}
-        <div className="backdrop-blur-xl bg-white/[0.03] border border-white/[0.06] rounded-3xl p-8 space-y-5 shadow-2xl">
+        <div className="backdrop-blur-xl bg-white border border-[#D6E8F5] rounded-3xl p-8 space-y-5 shadow-xl">
           <div className="flex items-center gap-2 mb-1">
-            <Lock className="w-4 h-4 text-cyan-400" />
-            <span className="text-xs font-bold text-slate-400 tracking-wider uppercase">
+            <Lock className="w-4 h-4 text-[#5AB0E4]" />
+            <span className="text-xs font-bold text-[#5A7A94] tracking-wider uppercase">
               {mode === 'login' ? 'Iniciar Sesión' : 'Crear Cuenta'}
             </span>
           </div>
 
           {/* Error / Lockout */}
           {lockoutInfo && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-xs text-red-300 text-center">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-xs text-red-600 text-center">
               {lockoutInfo}
             </div>
           )}
           {error && !lockoutInfo && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-xs text-red-300 text-center">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-xs text-red-600 text-center">
               {error}
             </div>
           )}
@@ -168,77 +162,77 @@ export default function LoginPage({ onBack }: { onBack?: () => void }) {
           <form onSubmit={mode === 'login' ? handleLogin : handleRegister} className="space-y-4">
             {mode === 'register' && (
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 tracking-wider uppercase">Nombre completo</label>
+                <label className="text-xs font-bold text-[#5A7A94] tracking-wider uppercase">Nombre completo</label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5A7A94]" />
                   <input
                     type="text"
                     value={name}
                     onChange={e => { setName(e.target.value); validateField('name', e.target.value); }}
                     placeholder="Ej: María Fernanda"
-                    className={`w-full bg-white/[0.04] border rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-all ${
-                      fieldErrors.name ? 'border-red-500/40 focus:ring-2 focus:ring-red-500/30' : 'border-white/[0.08] focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40'
+                    className={`w-full bg-[#F0F7FF] border rounded-xl pl-10 pr-4 py-3 text-sm text-[#1A2E3D] placeholder:text-[#5A7A94]/60 outline-none transition-all ${
+                      fieldErrors.name ? 'border-red-400 focus:ring-2 focus:ring-red-400/30' : 'border-[#D6E8F5] focus:ring-2 focus:ring-[#7CC4EB]/40 focus:border-[#7CC4EB]'
                     }`}
                   />
                 </div>
-                {fieldErrors.name && <p className="text-[10px] text-red-400">{fieldErrors.name}</p>}
+                {fieldErrors.name && <p className="text-[10px] text-red-500">{fieldErrors.name}</p>}
               </div>
             )}
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-400 tracking-wider uppercase">Correo electrónico</label>
+              <label className="text-xs font-bold text-[#5A7A94] tracking-wider uppercase">Correo electrónico</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5A7A94]" />
                 <input
                   type="email"
                   value={email}
                   onChange={e => { setEmail(e.target.value); validateField('email', e.target.value); }}
                   placeholder="tu@email.com"
-                  className={`w-full bg-white/[0.04] border rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-all ${
-                    fieldErrors.email ? 'border-red-500/40 focus:ring-2 focus:ring-red-500/30' : 'border-white/[0.08] focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40'
+                  className={`w-full bg-[#F0F7FF] border rounded-xl pl-10 pr-4 py-3 text-sm text-[#1A2E3D] placeholder:text-[#5A7A94]/60 outline-none transition-all ${
+                    fieldErrors.email ? 'border-red-400 focus:ring-2 focus:ring-red-400/30' : 'border-[#D6E8F5] focus:ring-2 focus:ring-[#7CC4EB]/40 focus:border-[#7CC4EB]'
                   }`}
                 />
               </div>
-              {fieldErrors.email && <p className="text-[10px] text-red-400">{fieldErrors.email}</p>}
+              {fieldErrors.email && <p className="text-[10px] text-red-500">{fieldErrors.email}</p>}
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-400 tracking-wider uppercase">Contraseña</label>
+              <label className="text-xs font-bold text-[#5A7A94] tracking-wider uppercase">Contraseña</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5A7A94]" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={e => { setPassword(e.target.value); validateField('password', e.target.value); }}
                   placeholder="Mínimo 8 caracteres, letras y números"
-                  className={`w-full bg-white/[0.04] border rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-all ${
-                    fieldErrors.password ? 'border-red-500/40 focus:ring-2 focus:ring-red-500/30' : 'border-white/[0.08] focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40'
+                  className={`w-full bg-[#F0F7FF] border rounded-xl pl-10 pr-10 py-3 text-sm text-[#1A2E3D] placeholder:text-[#5A7A94]/60 outline-none transition-all ${
+                    fieldErrors.password ? 'border-red-400 focus:ring-2 focus:ring-red-400/30' : 'border-[#D6E8F5] focus:ring-2 focus:ring-[#7CC4EB]/40 focus:border-[#7CC4EB]'
                   }`}
                 />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5A7A94] hover:text-[#1A2E3D] transition">
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {fieldErrors.password && <p className="text-[10px] text-red-400">{fieldErrors.password}</p>}
+              {fieldErrors.password && <p className="text-[10px] text-red-500">{fieldErrors.password}</p>}
             </div>
 
             {mode === 'register' && (
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 tracking-wider uppercase">Confirmar contraseña</label>
+                <label className="text-xs font-bold text-[#5A7A94] tracking-wider uppercase">Confirmar contraseña</label>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5A7A94]" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={e => { setConfirmPassword(e.target.value); validateField('confirmPassword', e.target.value); }}
                     placeholder="Repite tu contraseña"
-                    className={`w-full bg-white/[0.04] border rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none transition-all ${
-                      fieldErrors.confirmPassword ? 'border-red-500/40 focus:ring-2 focus:ring-red-500/30' : 'border-white/[0.08] focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500/40'
+                    className={`w-full bg-[#F0F7FF] border rounded-xl pl-10 pr-4 py-3 text-sm text-[#1A2E3D] placeholder:text-[#5A7A94]/60 outline-none transition-all ${
+                      fieldErrors.confirmPassword ? 'border-red-400 focus:ring-2 focus:ring-red-400/30' : 'border-[#D6E8F5] focus:ring-2 focus:ring-[#7CC4EB]/40 focus:border-[#7CC4EB]'
                     }`}
                   />
                 </div>
-                {fieldErrors.confirmPassword && <p className="text-[10px] text-red-400">{fieldErrors.confirmPassword}</p>}
+                {fieldErrors.confirmPassword && <p className="text-[10px] text-red-500">{fieldErrors.confirmPassword}</p>}
               </div>
             )}
 
@@ -247,7 +241,7 @@ export default function LoginPage({ onBack }: { onBack?: () => void }) {
               disabled={isSubmitting}
               whileHover={!isSubmitting ? { scale: 1.02 } : {}}
               whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-              className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-cyan-400 text-slate-950 shadow-lg shadow-cyan-500/20 transition-all disabled:opacity-60"
+              className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 bg-[#7CC4EB] text-white shadow-lg shadow-[#7CC4EB]/30 transition-all disabled:opacity-60 hover:bg-[#5AB0E4]"
             >
               {isSubmitting ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -260,33 +254,33 @@ export default function LoginPage({ onBack }: { onBack?: () => void }) {
           </form>
 
           {/* Role info */}
-          <div className="pt-3 border-t border-white/[0.04]">
+          <div className="pt-3 border-t border-[#D6E8F5]">
             {mode === 'login' ? (
               <div className="space-y-3">
-                <p className="text-[11px] text-slate-500 text-center">Cuentas de demo (contraseña: Admin1234!):</p>
+                <p className="text-[11px] text-[#5A7A94] text-center">Cuentas de demo (contraseña: Admin1234!):</p>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <button onClick={() => { setEmail('admin@twilightdental.com'); setPassword('Admin1234!'); }}
-                    className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-2 hover:bg-cyan-500/15 transition">
-                    <Shield className="w-4 h-4 text-cyan-400 mx-auto mb-1" />
-                    <span className="text-[9px] text-cyan-300 font-semibold block">Admin</span>
+                    className="bg-[#7CC4EB]/10 border border-[#7CC4EB]/30 rounded-lg p-2 hover:bg-[#7CC4EB]/20 transition">
+                    <Shield className="w-4 h-4 text-[#5AB0E4] mx-auto mb-1" />
+                    <span className="text-[9px] text-[#1A2E3D] font-semibold block">Admin</span>
                   </button>
                   <button onClick={() => { setEmail('colaborador@twilightdental.com'); setPassword('Admin1234!'); }}
-                    className="bg-violet-500/10 border border-violet-500/20 rounded-lg p-2 hover:bg-violet-500/15 transition">
-                    <UserCheck className="w-4 h-4 text-violet-400 mx-auto mb-1" />
-                    <span className="text-[9px] text-violet-300 font-semibold block">Colaborador</span>
+                    className="bg-[#F7B8D1]/20 border border-[#F7B8D1]/40 rounded-lg p-2 hover:bg-[#F7B8D1]/30 transition">
+                    <UserCheck className="w-4 h-4 text-[#945A7A] mx-auto mb-1" />
+                    <span className="text-[9px] text-[#1A2E3D] font-semibold block">Colaborador</span>
                   </button>
                   <button onClick={() => { setEmail('cliente@twilightdental.com'); setPassword('Admin1234!'); }}
                     className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-2 hover:bg-emerald-500/15 transition">
-                    <User className="w-4 h-4 text-emerald-400 mx-auto mb-1" />
-                    <span className="text-[9px] text-emerald-300 font-semibold block">Cliente</span>
+                    <User className="w-4 h-4 text-emerald-600 mx-auto mb-1" />
+                    <span className="text-[9px] text-[#1A2E3D] font-semibold block">Cliente</span>
                   </button>
                 </div>
               </div>
             ) : (
               <div className="flex items-start gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400 mt-0.5 flex-shrink-0" />
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  <strong className="text-slate-400">Tu cuenta será de tipo Cliente</strong> con acceso a servicios, citas y tienda dental.
+                <Sparkles className="w-3.5 h-3.5 text-[#5AB0E4] mt-0.5 flex-shrink-0" />
+                <p className="text-[11px] text-[#5A7A94] leading-relaxed">
+                  <strong className="text-[#1A2E3D]">Tu cuenta será de tipo Cliente</strong> con acceso a servicios, citas y tienda dental.
                 </p>
               </div>
             )}
@@ -295,17 +289,17 @@ export default function LoginPage({ onBack }: { onBack?: () => void }) {
           {/* Switch mode */}
           <div className="text-center">
             <button onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
-              className="text-xs text-slate-500 hover:text-cyan-400 transition">
+              className="text-xs text-[#5A7A94] hover:text-[#5AB0E4] transition">
               {mode === 'login'
-                ? <>¿No tienes cuenta? <strong className="text-cyan-400">Crear cuenta</strong></>
-                : <>¿Ya tienes cuenta? <strong className="text-cyan-400">Iniciar sesión</strong></>
+                ? <>¿No tienes cuenta? <strong className="text-[#5AB0E4]">Crear cuenta</strong></>
+                : <>¿Ya tienes cuenta? <strong className="text-[#5AB0E4]">Iniciar sesión</strong></>
               }
             </button>
           </div>
         </div>
 
-        <p className="text-center text-[10px] text-slate-600 mt-6">
-          &copy; 2026 Twilight Dental — Sistema de Gestión Odontológica
+        <p className="text-center text-[10px] text-[#5A7A94] mt-6">
+          &copy; 2026 Sonrisa Dental — Sistema de Gestión Odontológica
         </p>
       </motion.div>
     </div>
