@@ -5,7 +5,6 @@ import { randomUUID } from 'crypto';
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'twilight-dental-access-key-2026';
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'twilight-dental-refresh-key-2026';
-const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'twilight-dental-refresh-key-2026';
 const ACCESS_EXPIRES = '15m';
 const REFRESH_DAYS = 7;
 

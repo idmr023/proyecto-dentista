@@ -8,7 +8,11 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npx tsx src/server/index.ts",
     "dev:client": "vite",
-    "build": "tsc && vite build"
+    "build": "tsc && vite build",
+    "start": "npx tsx src/server/index.ts"
+  },
+  "engines": {
+    "node": ">=22.13.0"
   },
   "dependencies": {
     "framer-motion": "^12.43.0",
@@ -27,6 +31,6 @@
     "concurrently": "^8.2.2",
     "tsx": "^4.15.7",
     "typescript": "^5.4.5",
-    "vite": "^5.3.1"
+    "vite": "^8.2.1"
   }
 }

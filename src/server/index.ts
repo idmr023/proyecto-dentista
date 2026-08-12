@@ -1,4 +1,6 @@
 import http from 'http';
+import { existsSync, readFileSync } from 'fs';
+import { join, resolve, extname } from 'path';
 import { createRouter } from './router';
 import { registerAuthRoutes } from './routes/auth.routes';
 import { registerUserRoutes } from './routes/users.routes';
@@ -11,9 +13,53 @@ import { registerStatsRoutes } from './routes/stats.routes';
 import { getDb } from './db';
 
 const PORT = process.env.PORT || 4000;
+const DIST_DIR = resolve(import.meta.dirname || __dirname, '../../dist');
+const INDEX_HTML = join(DIST_DIR, 'index.html');
 
-// Allow all origins for development (change to specific domains for production)
-res.setHeader('Access-Control-Allow-Origin', '*');
+const MIME: Record<string, string> = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'application/javascript',
+  '.css': 'text/css',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.glb': 'model/gltf-binary',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+};
+
+function serveStatic(req: http.IncomingMessage, res: http.ServerResponse): boolean {
+  const url = new URL(req.url || '/', `http://${req.headers.host}`);
+  let pathname: string;
+  try {
+    pathname = decodeURIComponent(url.pathname);
+  } catch {
+    pathname = url.pathname;
+  }
+
+  if (pathname.startsWith('/api')) return false;
+
+  if (pathname === '/') pathname = '/index.html';
+
+  let filePath = join(DIST_DIR, pathname);
+  if (!existsSync(filePath) || filePath.startsWith(DIST_DIR) === false) {
+    if (!existsSync(INDEX_HTML)) return false;
+    filePath = INDEX_HTML;
+  }
+
+  try {
+    const ext = filePath.endsWith('.html') ? '.html' : (extname(filePath) || '.html');
+    const content = readFileSync(filePath);
+    res.writeHead(200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+    res.end(content);
+  } catch {
+    return false;
+  }
+  return true;
+}
 
 const router = createRouter();
 
@@ -28,8 +74,7 @@ registerOrderRoutes(router);
 registerStatsRoutes(router);
 
 const server = http.createServer((req, res) => {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
@@ -39,6 +84,8 @@ const server = http.createServer((req, res) => {
     res.end();
     return;
   }
+
+  if (serveStatic(req, res)) return;
 
   router.handle(req, res);
 });
