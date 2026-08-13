@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { getDb } from '../db.ts';
-import { requireRole, ok } from '../middleware.ts';
+import { getDb } from '../db.js';
 
+import { requireRole, ok } from '../middleware.js';
 export function registerStatsRoutes(router: any) {
   // GET /api/stats (admin only)
   router.get('/api/stats', async (req: IncomingMessage, res: ServerResponse) => {

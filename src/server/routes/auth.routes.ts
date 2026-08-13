@@ -1,9 +1,9 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { getDb } from '../db.ts';
-import { hashPassword, verifyPassword, signAccessToken, signRefreshToken, createSession, revokeSession, hashToken, isLoginLocked, recordLoginAttempt, setRefreshCookie, parseCookies } from '../auth.ts';
-import { requireAuth, parseJson, ok, error, created, authenticate } from '../middleware.ts';
+import { getDb } from '../db.js';
+import { hashPassword, verifyPassword, signAccessToken, signRefreshToken, createSession, revokeSession, hashToken, isLoginLocked, recordLoginAttempt, setRefreshCookie, parseCookies } from '../auth.js';
+import { requireAuth, parseJson, ok, error, created, authenticate } from '../middleware.js';
 import { randomBytes, randomUUID } from 'crypto';
-import { loginSchema, registerClientSchema } from '../../shared/schemas.ts';
+import { loginSchema, registerClientSchema } from '../../shared/schemas.js';
 
 export function registerAuthRoutes(router: any) {
   // POST /api/auth/login

@@ -1,9 +1,9 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { getDb } from '../db.ts';
-import { requireAuth, requireRole, parseJson, ok, error, created } from '../middleware.ts';
-import { createUserSchema } from '../../shared/schemas.ts';
+import { getDb } from '../db.js';
+import { requireAuth, requireRole, parseJson, ok, error, created } from '../middleware.js';
+import { createUserSchema } from '../../shared/schemas.js';
 import { randomBytes, randomUUID } from 'crypto';
-import { hashPassword } from '../auth.ts';
+import { hashPassword } from '../auth.js';
 
 export function registerUserRoutes(router: any) {
   // GET /api/users (admin only)

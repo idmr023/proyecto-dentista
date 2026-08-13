@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { getDb } from '../db.ts';
-import { requireAuth, requireRole, parseJson, ok, error, created } from '../middleware.ts';
-import { patientSchema } from '../../shared/schemas.ts';
+import { getDb } from '../db.js';
+import { requireAuth, requireRole, parseJson, ok, error, created } from '../middleware.js';
+import { patientSchema } from '../../shared/schemas.js';
 import { randomUUID } from 'crypto';
 
 export function registerPatientRoutes(router: any) {

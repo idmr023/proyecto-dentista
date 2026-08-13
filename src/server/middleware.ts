@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { verifyAccessToken, extractBearerToken, parseCookies, verifyRefreshToken, isSessionRevoked, hashToken, signRefreshToken, signAccessToken, rotateRefreshToken, setRefreshCookie, TokenPayload } from './auth.ts';
-import { getDb } from './db.ts';
+import { verifyAccessToken, extractBearerToken, parseCookies, verifyRefreshToken, isSessionRevoked, hashToken, signRefreshToken, signAccessToken, rotateRefreshToken, setRefreshCookie, type TokenPayload } from './auth.js';
+import { getDb } from './db.js';
 
 export type RouteHandler = (req: IncomingMessage, res: ServerResponse, params?: Record<string, string>) => void | Promise<void> | boolean | null;
 

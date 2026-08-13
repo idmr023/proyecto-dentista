@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { getDb } from '../db.ts';
-import { requireRole, parseJson, ok, error } from '../middleware.ts';
-import { bulkOdontogramSchema } from '../../shared/schemas.ts';
+import { getDb } from '../db.js';
+import { requireRole, parseJson, ok, error } from '../middleware.js';
+import { bulkOdontogramSchema } from '../../shared/schemas.js';
 
 export function registerOdontogramRoutes(router: any) {
   // GET /api/patients/:id/odontogram (admin only)

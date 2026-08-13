@@ -1,16 +1,16 @@
 import http from 'http';
 import { existsSync, readFileSync } from 'fs';
 import { join, resolve, extname } from 'path';
-import { createRouter } from './router.ts';
-import { registerAuthRoutes } from './routes/auth.routes.ts';
-import { registerUserRoutes } from './routes/users.routes.ts';
-import { registerPatientRoutes } from './routes/patients.routes.ts';
-import { registerAppointmentRoutes } from './routes/appointments.routes.ts';
-import { registerOdontogramRoutes } from './routes/odontogram.routes.ts';
-import { registerProductRoutes } from './routes/products.routes.ts';
-import { registerOrderRoutes } from './routes/orders.routes.ts';
-import { registerStatsRoutes } from './routes/stats.routes.ts';
-import { getDb } from './db.ts';
+import { createRouter } from './router.js';
+import { registerAuthRoutes } from './routes/auth.routes.js';
+import { registerUserRoutes } from './routes/users.routes.js';
+import { registerPatientRoutes } from './routes/patients.routes.js';
+import { registerAppointmentRoutes } from './routes/appointments.routes.js';
+import { registerOdontogramRoutes } from './routes/odontogram.routes.js';
+import { registerProductRoutes } from './routes/products.routes.js';
+import { registerOrderRoutes } from './routes/orders.routes.js';
+import { registerStatsRoutes } from './routes/stats.routes.js';
+import { getDb } from './db.js';
 
 const PORT = process.env.PORT || 4000;
 const DIST_DIR = resolve(import.meta.dirname || __dirname, '../../dist');

@@ -1,6 +1,6 @@
 import { scryptSync, randomBytes, timingSafeEqual, createHash } from 'crypto';
 import jwt from 'jsonwebtoken';
-import { getDb } from './db.ts';
+import { getDb } from './db.js';
 import { randomUUID } from 'crypto';
 
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'twilight-dental-access-key-2026';
