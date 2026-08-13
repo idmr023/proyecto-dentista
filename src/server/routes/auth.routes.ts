@@ -18,36 +18,34 @@ export function registerAuthRoutes(router: any) {
     const { email, password } = parsed.data;
     const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || '127.0.0.1';
 
-    // Rate limit check
-    const lock = isLoginLocked(email, ip);
+    const lock = await isLoginLocked(email, ip);
     if (lock.locked) {
-      recordLoginAttempt(email, ip, false);
+      await recordLoginAttempt(email, ip, false);
       error(res, 429, `Demasiados intentos fallidos. Espera ${lock.retryAfterSeconds} segundos.`);
       return;
     }
 
     const db = getDb();
-    const user = db.prepare('SELECT id, name, email, password_hash, salt, role, is_active FROM users WHERE email = ?')
-      .get(email.toLowerCase()) as any;
+    const user = await db.get('SELECT id, name, email, password_hash, salt, role, is_active FROM users WHERE email = ?', email.toLowerCase()) as any;
 
     if (!user || !user.is_active) {
-      recordLoginAttempt(email, ip, false);
+      await recordLoginAttempt(email, ip, false);
       error(res, 401, 'Correo electrónico o contraseña incorrectos.');
       return;
     }
 
     if (!verifyPassword(password, user.password_hash, user.salt)) {
-      recordLoginAttempt(email, ip, false);
+      await recordLoginAttempt(email, ip, false);
       error(res, 401, 'Correo electrónico o contraseña incorrectos.');
       return;
     }
 
-    recordLoginAttempt(email, ip, true);
+    await recordLoginAttempt(email, ip, true);
 
     const tokenPayload = { sub: user.id, email: user.email, role: user.role };
     const accessToken = signAccessToken(tokenPayload);
     const refreshToken = signRefreshToken(tokenPayload);
-    createSession(user.id, refreshToken);
+    await createSession(user.id, refreshToken);
     setRefreshCookie(res, refreshToken);
 
     ok(res, {
@@ -69,7 +67,7 @@ export function registerAuthRoutes(router: any) {
     const { name, email, password } = parsed.data;
     const db = getDb();
 
-    const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase());
+    const existing = await db.get('SELECT id FROM users WHERE email = ?', email.toLowerCase());
     if (existing) {
       error(res, 409, 'Este correo ya está registrado.');
       return;
@@ -79,16 +77,20 @@ export function registerAuthRoutes(router: any) {
     const passwordHash = hashPassword(password, salt);
     const userId = randomUUID();
 
-    db.prepare('INSERT INTO users (id, name, email, password_hash, salt, role) VALUES (?, ?, ?, ?, ?, ?)')
-      .run(userId, name.trim(), email.toLowerCase(), passwordHash, salt.toString('hex'), 'cliente');
+    await db.run(
+      'INSERT INTO users (id, name, email, password_hash, salt, role) VALUES (?, ?, ?, ?, ?, ?)',
+      userId, name.trim(), email.toLowerCase(), passwordHash, salt.toString('hex'), 'cliente'
+    );
 
-    db.prepare('INSERT INTO patients (id, name, phone, email, user_id) VALUES (?, ?, ?, ?, ?)')
-      .run(randomUUID(), name.trim(), '', email.toLowerCase(), userId);
+    await db.run(
+      'INSERT INTO patients (id, name, phone, email, user_id) VALUES (?, ?, ?, ?, ?)',
+      randomUUID(), name.trim(), '', email.toLowerCase(), userId
+    );
 
     const tokenPayload = { sub: userId, email: email.toLowerCase(), role: 'cliente' };
     const accessToken = signAccessToken(tokenPayload);
     const refreshToken = signRefreshToken(tokenPayload);
-    createSession(userId, refreshToken);
+    await createSession(userId, refreshToken);
     setRefreshCookie(res, refreshToken);
 
     created(res, {
@@ -100,7 +102,7 @@ export function registerAuthRoutes(router: any) {
 
   // POST /api/auth/refresh
   router.post('/api/auth/refresh', async (req: IncomingMessage, res: ServerResponse) => {
-    const { handleRefresh } = await import('../middleware.ts');
+    const { handleRefresh } = await import('../middleware.js');
     handleRefresh(req, res);
   });
 
@@ -109,7 +111,7 @@ export function registerAuthRoutes(router: any) {
     const cookies = parseCookies(req.headers.cookie);
     const refreshToken = cookies.refresh_token;
     if (refreshToken) {
-      revokeSession(hashToken(refreshToken));
+      await revokeSession(hashToken(refreshToken));
     }
     res.setHeader('Set-Cookie',
       'refresh_token=; Path=/api/auth/refresh; HttpOnly; SameSite=Strict; Max-Age=0'
@@ -123,8 +125,7 @@ export function registerAuthRoutes(router: any) {
     if (!user) return;
 
     const db = getDb();
-    const fullUser = db.prepare('SELECT id, name, email, role, is_active, created_at FROM users WHERE id = ?')
-      .get(user.sub) as any;
+    const fullUser = await db.get('SELECT id, name, email, role, is_active, created_at FROM users WHERE id = ?', user.sub) as any;
 
     if (!fullUser || !fullUser.is_active) {
       error(res, 404, 'Usuario no encontrado.');

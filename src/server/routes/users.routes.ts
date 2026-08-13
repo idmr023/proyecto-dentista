@@ -12,7 +12,7 @@ export function registerUserRoutes(router: any) {
     if (!guard) return;
 
     const db = getDb();
-    const users = db.prepare('SELECT id, name, email, role, is_active, created_at FROM users ORDER BY created_at DESC').all();
+    const users = await db.all('SELECT id, name, email, role, is_active, created_at FROM users ORDER BY created_at DESC');
     ok(res, { users });
   });
 
@@ -31,7 +31,7 @@ export function registerUserRoutes(router: any) {
     const { name, email, password, role } = parsed.data;
     const db = getDb();
 
-    const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email.toLowerCase());
+    const existing = await db.get('SELECT id FROM users WHERE email = ?', email.toLowerCase());
     if (existing) {
       error(res, 409, 'Este correo ya está registrado.');
       return;
@@ -41,8 +41,10 @@ export function registerUserRoutes(router: any) {
     const passwordHash = hashPassword(password, salt);
     const userId = randomUUID();
 
-    db.prepare('INSERT INTO users (id, name, email, password_hash, salt, role) VALUES (?, ?, ?, ?, ?, ?)')
-      .run(userId, name.trim(), email.toLowerCase(), passwordHash, salt.toString('hex'), role);
+    await db.run(
+      'INSERT INTO users (id, name, email, password_hash, salt, role) VALUES (?, ?, ?, ?, ?, ?)',
+      userId, name.trim(), email.toLowerCase(), passwordHash, salt.toString('hex'), role
+    );
 
     created(res, {
       user: { id: userId, name: name.trim(), email: email.toLowerCase(), role, is_active: 1 },
@@ -58,7 +60,7 @@ export function registerUserRoutes(router: any) {
     const body = await parseJson(req);
     const db = getDb();
 
-    const existing = db.prepare('SELECT id FROM users WHERE id = ?').get(id);
+    const existing = await db.get('SELECT id FROM users WHERE id = ?', id);
     if (!existing) {
       error(res, 404, 'Usuario no encontrado.');
       return;
@@ -91,9 +93,9 @@ export function registerUserRoutes(router: any) {
     }
 
     values.push(id);
-    db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...values);
+    await db.run(`UPDATE users SET ${updates.map((u, i) => u.replace('?', `$${i + 1}`)).join(', ')} WHERE id = $${values.length}`, ...values);
 
-    const user = db.prepare('SELECT id, name, email, role, is_active, created_at FROM users WHERE id = ?').get(id);
+    const user = await db.get('SELECT id, name, email, role, is_active, created_at FROM users WHERE id = ?', id);
     ok(res, { user });
   });
 
@@ -105,7 +107,6 @@ export function registerUserRoutes(router: any) {
     const { id } = (req as any).params;
     const db = getDb();
 
-    // Prevent self-deletion
     const authUser = requireAuth(req, res);
     if (!authUser) return;
     if (authUser.sub === id) {
@@ -113,7 +114,7 @@ export function registerUserRoutes(router: any) {
       return;
     }
 
-    const result = db.prepare('DELETE FROM users WHERE id = ?').run(id);
+    const result = await db.run('DELETE FROM users WHERE id = ?', id);
     if (result.changes === 0) {
       error(res, 404, 'Usuario no encontrado.');
       return;

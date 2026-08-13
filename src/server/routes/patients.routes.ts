@@ -5,7 +5,7 @@ import { patientSchema } from '../../shared/schemas.js';
 import { randomUUID } from 'crypto';
 
 export function registerPatientRoutes(router: any) {
-  // GET /api/patients (any authenticated user — clients need it to book appointments)
+  // GET /api/patients
   router.get('/api/patients', async (req: IncomingMessage, res: ServerResponse) => {
     const user = requireAuth(req, res);
     if (!user) return;
@@ -13,53 +13,48 @@ export function registerPatientRoutes(router: any) {
     const db = getDb();
     let patients;
     if (user.role === 'cliente') {
-      patients = db.prepare('SELECT * FROM patients WHERE user_id = ? ORDER BY created_at DESC').all(user.sub);
+      patients = await db.all('SELECT * FROM patients WHERE user_id = ? ORDER BY created_at DESC', user.sub);
     } else {
-      patients = db.prepare('SELECT * FROM patients ORDER BY created_at DESC').all();
+      patients = await db.all('SELECT * FROM patients ORDER BY created_at DESC');
     }
     ok(res, { patients });
   });
 
-  // GET /api/patients/:id (admin, colaborador)
+  // GET /api/patients/:id
   router.get('/api/patients/:id', async (req: IncomingMessage, res: ServerResponse) => {
     const guard = requireRole(['admin', 'colaborador'])(req, res);
     if (!guard) return;
 
     const { id } = (req as any).params;
     const db = getDb();
-    const patient = db.prepare('SELECT * FROM patients WHERE id = ?').get(id);
-    if (!patient) {
-      error(res, 404, 'Paciente no encontrado.');
-      return;
-    }
+    const patient = await db.get('SELECT * FROM patients WHERE id = ?', id);
+    if (!patient) { error(res, 404, 'Paciente no encontrado.'); return; }
     ok(res, { patient });
   });
 
-  // POST /api/patients (admin, colaborador)
+  // POST /api/patients
   router.post('/api/patients', async (req: IncomingMessage, res: ServerResponse) => {
     const guard = requireRole(['admin', 'colaborador'])(req, res);
     if (!guard) return;
 
     const body = await parseJson(req);
     const parsed = patientSchema.safeParse(body);
-    if (!parsed.success) {
-      error(res, 400, parsed.error.issues[0]?.message || 'Datos inválidos');
-      return;
-    }
+    if (!parsed.success) { error(res, 400, parsed.error.issues[0]?.message || 'Datos inválidos'); return; }
 
     const { name, phone, email, birth_date, notes } = parsed.data;
     const db = getDb();
     const id = randomUUID();
 
-    db.prepare(
-      'INSERT INTO patients (id, name, phone, email, birth_date, notes) VALUES (?, ?, ?, ?, ?, ?)'
-    ).run(id, name.trim(), phone.trim(), email || '', birth_date || '', notes || '');
+    await db.run(
+      'INSERT INTO patients (id, name, phone, email, birth_date, notes) VALUES (?, ?, ?, ?, ?, ?)',
+      id, name.trim(), phone.trim(), email || '', birth_date || '', notes || ''
+    );
 
-    const patient = db.prepare('SELECT * FROM patients WHERE id = ?').get(id);
+    const patient = await db.get('SELECT * FROM patients WHERE id = ?', id);
     created(res, { patient });
   });
 
-  // PUT /api/patients/:id (admin, colaborador)
+  // PUT /api/patients/:id
   router.put('/api/patients/:id', async (req: IncomingMessage, res: ServerResponse) => {
     const guard = requireRole(['admin', 'colaborador'])(req, res);
     if (!guard) return;
@@ -67,17 +62,11 @@ export function registerPatientRoutes(router: any) {
     const { id } = (req as any).params;
     const body = await parseJson(req);
     const parsed = patientSchema.partial().safeParse(body);
-    if (!parsed.success) {
-      error(res, 400, parsed.error.issues[0]?.message || 'Datos inválidos');
-      return;
-    }
+    if (!parsed.success) { error(res, 400, parsed.error.issues[0]?.message || 'Datos inválidos'); return; }
 
     const db = getDb();
-    const existing = db.prepare('SELECT id FROM patients WHERE id = ?').get(id);
-    if (!existing) {
-      error(res, 404, 'Paciente no encontrado.');
-      return;
-    }
+    const existing = await db.get('SELECT id FROM patients WHERE id = ?', id);
+    if (!existing) { error(res, 404, 'Paciente no encontrado.'); return; }
 
     const updates: string[] = [];
     const values: any[] = [];
@@ -91,24 +80,22 @@ export function registerPatientRoutes(router: any) {
     if (updates.length === 0) { error(res, 400, 'Sin cambios.'); return; }
 
     values.push(id);
-    db.prepare(`UPDATE patients SET ${updates.join(', ')} WHERE id = ?`).run(...values);
+    const setClause = updates.map((u, i) => u.replace('?', `$${i + 1}`)).join(', ');
+    await db.run(`UPDATE patients SET ${setClause} WHERE id = $${values.length}`, ...values);
 
-    const patient = db.prepare('SELECT * FROM patients WHERE id = ?').get(id);
+    const patient = await db.get('SELECT * FROM patients WHERE id = ?', id);
     ok(res, { patient });
   });
 
-  // DELETE /api/patients/:id (admin)
+  // DELETE /api/patients/:id
   router.delete('/api/patients/:id', async (req: IncomingMessage, res: ServerResponse) => {
     const guard = requireRole(['admin'])(req, res);
     if (!guard) return;
 
     const { id } = (req as any).params;
     const db = getDb();
-    const result = db.prepare('DELETE FROM patients WHERE id = ?').run(id);
-    if (result.changes === 0) {
-      error(res, 404, 'Paciente no encontrado.');
-      return;
-    }
+    const result = await db.run('DELETE FROM patients WHERE id = ?', id);
+    if (result.changes === 0) { error(res, 404, 'Paciente no encontrado.'); return; }
     ok(res, { message: 'Paciente eliminado.' });
   });
 }
