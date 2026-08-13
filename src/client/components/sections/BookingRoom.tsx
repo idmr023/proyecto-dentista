@@ -61,6 +61,7 @@ export default function BookingRoom() {
   ];
 
   return (
+    <>
     <section className="relative min-h-screen bg-[#F0F7FF] flex items-center justify-center py-24 px-6">
       {/* Ambient glows */}
       <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#7CC4EB]/15 rounded-full blur-[150px]" />
@@ -301,5 +302,6 @@ export default function BookingRoom() {
         </div>
       </div>
     </section>
+  </>
   );
 }

@@ -1,4 +1,5 @@
 import http from 'http';
+import 'dotenv/config';
 import { existsSync, readFileSync } from 'fs';
 import { join, resolve, extname } from 'path';
 import { createRouter } from './router.js';
@@ -9,7 +10,7 @@ import { registerAppointmentRoutes } from './routes/appointments.routes.js';
 import { registerOdontogramRoutes } from './routes/odontogram.routes.js';
 import { registerProductRoutes } from './routes/products.routes.js';
 import { registerOrderRoutes } from './routes/orders.routes.js';
-import { registerStatsRoutes } from './routes/stats.routes.js';
+import { registerStatsRoutes } from './routes/stats.routes.js'; 
 import { initDb } from './db.js';
 
 const PORT = process.env.PORT || 4000;

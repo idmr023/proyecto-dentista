@@ -1,5 +1,9 @@
 import { Pool } from 'pg';
 import { randomUUID, scryptSync, randomBytes } from 'crypto';
+import { config } from 'dotenv';
+import { resolve } from 'path';
+
+config({ path: resolve(import.meta.dirname || '.', '../.env') });
 
 const DATABASE_URL = process.env.DATABASE_URL;
 
@@ -14,20 +18,22 @@ const pool = new Pool({
 });
 
 export function getDb() {
+  function toPg(sql: string): string {
+    let idx = 0;
+    return sql.replace(/\?/g, () => `$${++idx}`);
+  }
+
   return {
     async get(sql: string, ...params: any[]) {
-      const pgSql = sql.replace(/\?/g, (_, i) => `$${i + 1}`);
-      const result = await pool.query(pgSql, params);
+      const result = await pool.query(toPg(sql), params);
       return result.rows[0] || null;
     },
     async all(sql: string, ...params: any[]) {
-      const pgSql = sql.replace(/\?/g, (_, i) => `$${i + 1}`);
-      const result = await pool.query(pgSql, params);
+      const result = await pool.query(toPg(sql), params);
       return result.rows;
     },
     async run(sql: string, ...params: any[]) {
-      const pgSql = sql.replace(/\?/g, (_, i) => `$${i + 1}`);
-      const result = await pool.query(pgSql, params);
+      const result = await pool.query(toPg(sql), params);
       return { changes: result.rowCount };
     },
     async exec(sql: string) {
