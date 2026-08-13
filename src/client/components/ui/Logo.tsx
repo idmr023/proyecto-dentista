@@ -8,8 +8,8 @@ export function Logo({ size = "sm", className = "" }: { size?: "sm" | "md" | "lg
       stroke: "[-webkit-text-stroke:2px_white]"
     },
     md: {
-      container: "h-20 md:h-24", // Altura mediana
-      text: "text-4xl md:text-5xl",
+      container: "h-13 md:h-20", // Altura mediana
+      text: "text-3xl md:text-4xl",
       stroke: "[-webkit-text-stroke:4px_white]"
     },
     lg: {

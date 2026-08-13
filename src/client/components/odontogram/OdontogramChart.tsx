@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ToothSVG, { ToothMark, zoneColors } from './ToothSVG';
+import ToothSVG, { ToothMark, zoneColors } from './ToothSVG.tsx';
 
 const teethData = [
   { x: 35, zone: 'muelas', label: '18', type: 'molar' as const },

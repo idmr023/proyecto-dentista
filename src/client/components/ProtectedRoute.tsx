@@ -1,6 +1,6 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import type { Role } from '../../shared/schemas';
+import { useAuth } from '../contexts/AuthContext.tsx';
+import type { Role } from '../../shared/schemas.ts';
 import { ShieldAlert, ArrowLeft } from 'lucide-react';
 
 interface ProtectedRouteProps {

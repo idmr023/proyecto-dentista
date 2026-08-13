@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
-import { api, setAccessToken, getAccessToken } from '../lib/api';
-import type { Role } from '../../shared/schemas';
+import { api, setAccessToken, getAccessToken } from '../lib/api.ts';
+import type { Role } from '../../shared/schemas.ts';
 
 interface User {
   id: string;

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { api } from '../lib/api';
+import { useAuth } from '../contexts/AuthContext.tsx';
+import { api } from '../lib/api.ts';
 import { ArrowRight, Clock, MapPin, Phone, LogOut } from 'lucide-react';
+import { Logo } from '../components/ui/Logo.tsx';
 
 const services = [
   { title: 'Odontopediatría', desc: 'Cuidado preventivo y lúdico para niños.', icon: '👶' },
@@ -191,15 +192,7 @@ export default function ClientDashboard() {
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-[#D6E8F5]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7CC4EB] to-[#5AB0E4] flex items-center justify-center text-lg font-black text-white shadow-md">
-              🦷
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-[#1A2E3D]">
-                Sonrisa Dental
-              </h1>
-              <p className="text-[10px] text-[#5A7A94] uppercase tracking-widest">Panel del Paciente</p>
-            </div>
+            <Logo />
           </div>
 
           <nav className="hidden md:flex items-center gap-1">

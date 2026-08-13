@@ -477,7 +477,7 @@ export default function DentalExplorer() {
                   </div>
                   <h4 className="text-[#1A2E3D] font-bold mb-1">Explora la dentadura</h4>
                   <p className="text-[#5A7A94] text-xs max-w-[200px]">
-                    Haz hover sobre diferentes zonas para descubrir cada especialidad
+                    Pasa el mouse sobre diferentes zonas para descubrir cada especialidad
                   </p>
                 </motion.div>
               )}

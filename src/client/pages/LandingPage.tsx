@@ -1,9 +1,8 @@
-import React from 'react';
-import Reception from '../components/sections/Reception';
-import TreatmentTimeline from '../components/sections/TreatmentTimeline';
-import DentalExplorer from '../components/sections/DentalExplorer';
-import BookingRoom from '../components/sections/BookingRoom';
-import { Logo } from '../components/ui/Logo';
+import Reception from '../components/sections/Reception.tsx';
+import TreatmentTimeline from '../components/sections/TreatmentTimeline.tsx';
+import DentalExplorer from '../components/sections/DentalExplorer.tsx';
+import BookingRoom from '../components/sections/BookingRoom.tsx';
+import { Logo } from '../components/ui/Logo.tsx';
 import { LogIn, Phone, MapPin, Clock } from 'lucide-react';
 
 interface LandingPageProps {

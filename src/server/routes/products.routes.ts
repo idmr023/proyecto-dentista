@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { getDb } from '../db';
-import { ok } from '../middleware';
+import { getDb } from '../db.ts';
+import { ok } from '../middleware.ts';
 
 export function registerProductRoutes(router: any) {
   // GET /api/products (public)

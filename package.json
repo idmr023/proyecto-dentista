@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Sistema integral de gestion odontologica con odontograma interactivo y tienda",
   "main": "src/server/index.ts",
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npx tsx src/server/index.ts",
@@ -20,6 +21,7 @@
     "lucide-react": "^0.400.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.2",
     "zod": "^4.4.3"
   },
   "devDependencies": {

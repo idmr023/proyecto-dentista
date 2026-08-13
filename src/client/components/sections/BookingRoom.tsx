@@ -33,7 +33,7 @@ export default function BookingRoom() {
     }
 
     const message = encodeURIComponent(
-      `Hola Sonrisa Dental 🦷\nQuiero agendar una cita:\n\n` +
+      `Hola Dental Colors 🦷\nQuiero agendar una cita:\n\n` +
       `👤 Nombre: ${form.name}\n` +
       `📞 WhatsApp: ${form.phone}\n` +
       `🩺 Servicio: ${form.service}\n` +

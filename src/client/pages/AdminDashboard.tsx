@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
-import { api } from '../lib/api';
-import { Logo } from '../components/ui/Logo';
+import { useAuth } from '../contexts/AuthContext.tsx';
+import { api } from '../lib/api.ts';
+import { Logo } from '../components/ui/Logo.tsx';
 import {
   LayoutDashboard, Stethoscope, Calendar, ShoppingBag,
   FileText, Users, Settings, LogOut, ChevronRight, Menu, X,
   Plus, Trash2, Edit2, Check, Clock, AlertCircle, UserPlus,
   TrendingUp, DollarSign, Package, Eye
 } from 'lucide-react';
-import OdontogramChart from '../components/odontogram/OdontogramChart';
-import { ToothMark, FACE_TOOLS } from '../components/odontogram/ToothSVG';
-import HistoriaClinica from '../components/historia/HistoriaClinica';
+import OdontogramChart from '../components/odontogram/OdontogramChart.tsx';
+import { ToothMark, FACE_TOOLS } from '../components/odontogram/ToothSVG.tsx';
+import HistoriaClinica from '../components/historia/HistoriaClinica.tsx';
 
 /* ═══════════════════════════════════════════════════════
    MAIN ADMIN DASHBOARD

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext.tsx';
 import { Lock, Mail, User, Shield, UserCheck, ArrowRight, Sparkles, Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
-import { Logo } from '../components/ui/Logo';
+import { Logo } from '../components/ui/Logo.tsx';
 
 export default function LoginPage({ onBack }: { onBack?: () => void }) {
   const { login, register } = useAuth();

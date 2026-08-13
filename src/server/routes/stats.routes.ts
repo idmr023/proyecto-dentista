@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { getDb } from '../db';
-import { requireRole, ok } from '../middleware';
+import { getDb } from '../db.ts';
+import { requireRole, ok } from '../middleware.ts';
 
 export function registerStatsRoutes(router: any) {
   // GET /api/stats (admin only)

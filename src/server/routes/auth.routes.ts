@@ -1,9 +1,9 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { getDb } from '../db';
-import { hashPassword, verifyPassword, signAccessToken, signRefreshToken, createSession, revokeSession, hashToken, isLoginLocked, recordLoginAttempt, setRefreshCookie, parseCookies } from '../auth';
-import { requireAuth, parseJson, ok, error, created, authenticate } from '../middleware';
+import { getDb } from '../db.ts';
+import { hashPassword, verifyPassword, signAccessToken, signRefreshToken, createSession, revokeSession, hashToken, isLoginLocked, recordLoginAttempt, setRefreshCookie, parseCookies } from '../auth.ts';
+import { requireAuth, parseJson, ok, error, created, authenticate } from '../middleware.ts';
 import { randomBytes, randomUUID } from 'crypto';
-import { loginSchema, registerClientSchema } from '../../shared/schemas';
+import { loginSchema, registerClientSchema } from '../../shared/schemas.ts';
 
 export function registerAuthRoutes(router: any) {
   // POST /api/auth/login
@@ -100,7 +100,7 @@ export function registerAuthRoutes(router: any) {
 
   // POST /api/auth/refresh
   router.post('/api/auth/refresh', async (req: IncomingMessage, res: ServerResponse) => {
-    const { handleRefresh } = await import('../middleware');
+    const { handleRefresh } = await import('../middleware.ts');
     handleRefresh(req, res);
   });
 

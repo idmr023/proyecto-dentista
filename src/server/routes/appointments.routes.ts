@@ -1,7 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-import { getDb } from '../db';
-import { requireRole, requireAuth, parseJson, ok, error, created } from '../middleware';
-import { appointmentSchema, appointmentStatusSchema } from '../../shared/schemas';
+import { getDb } from '../db.ts';
+import { requireRole, requireAuth, parseJson, ok, error, created } from '../middleware.ts';
+import { appointmentSchema, appointmentStatusSchema } from '../../shared/schemas.ts';
 import { randomUUID } from 'crypto';
 
 export function registerAppointmentRoutes(router: any) {

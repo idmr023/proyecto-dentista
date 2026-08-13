@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, FileText, Save, Stethoscope, User } from 'lucide-react';
-import { api } from '../../lib/api';
-import OdontogramChart from '../odontogram/OdontogramChart';
-import { ToothMark } from '../odontogram/ToothSVG';
+import { api } from '../../lib/api.ts';
+import OdontogramChart from '../odontogram/OdontogramChart.tsx';
+import { ToothMark } from '../odontogram/ToothSVG.tsx';
 
 interface HistoriaPatient {
   id: string; name: string; phone: string; email: string; birth_date: string; notes: string; created_at: string;
