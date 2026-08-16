@@ -11,6 +11,7 @@ import { registerOdontogramRoutes } from './routes/odontogram.routes.js';
 import { registerProductRoutes } from './routes/products.routes.js';
 import { registerOrderRoutes } from './routes/orders.routes.js';
 import { registerStatsRoutes } from './routes/stats.routes.js'; 
+import { registerMedicalHistoryRoutes } from './routes/medical_histories.routes.js';
 import { initDb } from './db.js';
 
 const PORT = process.env.PORT || 4000;
@@ -73,6 +74,7 @@ registerOdontogramRoutes(router);
 registerProductRoutes(router);
 registerOrderRoutes(router);
 registerStatsRoutes(router);
+registerMedicalHistoryRoutes(router);
 
 const server = http.createServer((req, res) => {
   const origin = req.headers.origin || '';

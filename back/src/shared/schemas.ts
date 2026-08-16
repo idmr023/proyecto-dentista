@@ -79,6 +79,22 @@ export const bulkOdontogramSchema = z.object({
   marks: z.array(toothMarkSchema),
 });
 
+// ─── Medical Histories ───────────────────────────────
+export const medicalHistorySchema = z.object({
+  patient_id: z.string().min(1, 'Selecciona un paciente'),
+  treatment: z.string().min(1, 'El tratamiento es requerido'),
+  total: z.number().positive('El total debe ser mayor a 0'),
+  paid: z.number().nonnegative('El monto a cuenta no puede ser negativo').default(0),
+  signature: z.string().optional().or(z.literal('')),
+  observations: z.string().optional().or(z.literal('')),
+});
+
+export const medicalHistoryPaymentSchema = z.object({
+  paid: z.number().positive('El monto debe ser mayor a 0'),
+  signature: z.string().optional().or(z.literal('')),
+  observations: z.string().optional().or(z.literal('')),
+});
+
 // ─── Products ────────────────────────────────────────
 export const productSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),

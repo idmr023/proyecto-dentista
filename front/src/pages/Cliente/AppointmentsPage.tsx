@@ -1,7 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { api } from '../../lib/api.ts';
+import { Calendar as CalendarIcon } from 'lucide-react';
+
+function buildGoogleCalendarUrl(appt: any): string {
+  const start = new Date(`${appt.appointment_date}T${appt.appointment_time}:00`);
+  const end = new Date(start.getTime() + 60 * 60 * 1000);
+  const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').slice(0, 15);
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: `Cita Dental - ${appt.service}`,
+    dates: `${fmt(start)}/${fmt(end)}`,
+    details: `Cita dental (${appt.service}) ${appt.notes ? '\nNotas: ' + appt.notes : ''}`,
+    ctz: 'America/Lima',
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
 
 const services = [
   'Odontopediatría', 'Endodoncia', 'Implantes Dentales', 
@@ -15,6 +30,8 @@ export default function AppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [appointmentMsg, setAppointmentMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [booked, setBooked] = useState<any>(null);
+  const [gcalUrl, setGcalUrl] = useState('');
 
   const [form, setForm] = useState({
     patient_id: '',
@@ -35,12 +52,17 @@ export default function AppointmentsPage() {
     e.preventDefault();
     setSubmitting(true);
     setAppointmentMsg(null);
+    setBooked(null);
+    setGcalUrl('');
     try {
-      await api('/appointments', {
+      const res = await api('/appointments', {
         method: 'POST',
         body: form,
       });
-      setAppointmentMsg({ type: 'success', text: 'Cita registrada exitosamente.' });
+      const appt = res.appointment;
+      setBooked(appt);
+      setGcalUrl(buildGoogleCalendarUrl(appt));
+      setAppointmentMsg({ type: 'success', text: 'Cita registrada exitosamente. La dentista ha sido notificada por correo.' });
       setForm({ patient_id: '', service: '', appointment_date: '', appointment_time: '', notes: '' });
     } catch (err) {
       setAppointmentMsg({ type: 'error', text: (err as Error).message || 'Error al registrar la cita.' });
@@ -48,6 +70,12 @@ export default function AppointmentsPage() {
       setSubmitting(false);
     }
   };
+
+  const resetForm = useCallback(() => {
+    setAppointmentMsg(null);
+    setBooked(null);
+    setGcalUrl('');
+  }, []);
 
   if (loading) return <div className="flex justify-center py-20"><div className="w-8 h-8 border-2 border-[#7CC4EB] border-t-transparent rounded-full animate-spin" /></div>;
 
@@ -72,6 +100,38 @@ export default function AppointmentsPage() {
             }`}
           >
             {appointmentMsg.text}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {booked && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="mb-6 bg-white border border-[#D6E8F5] rounded-2xl p-6 shadow-sm"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <CalendarIcon className="w-5 h-5 text-[#5AB0E4]" />
+              <span className="text-sm font-bold text-[#1A2E3D]">Cita confirmada</span>
+            </div>
+            <p className="text-xs text-[#5A7A94]">
+              {booked.service} • {booked.appointment_date} a las {booked.appointment_time}
+            </p>
+            <p className="text-xs text-[#5A7A94] mt-1">
+              La dentista recibió un correo con los detalles de tu cita.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-5">
+              <a href={gcalUrl} target="_blank" rel="noreferrer"
+                className="inline-flex items-center gap-2 bg-[#4285F4] hover:bg-[#3367d6] text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition">
+                <CalendarIcon className="w-4 h-4" /> Añadir a Google Calendar
+              </a>
+              <button onClick={resetForm}
+                className="px-5 py-2.5 rounded-xl text-sm font-semibold text-[#5A7A94] border border-[#D6E8F5] hover:bg-[#F0F7FF] transition">
+                Agendar otra cita
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

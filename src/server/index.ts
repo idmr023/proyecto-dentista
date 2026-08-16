@@ -1,7 +1,4 @@
-import http from 'http';
-import { existsSync, readFileSync } from 'fs';
-import { join, resolve, extname } from 'path';
-import { createRouter } from './router.js';
+import { registerMedicalHistoryRoutes } from './routes/medical_histories.routes.js';
 import { registerAuthRoutes } from './routes/auth.routes.js';
 import { registerUserRoutes } from './routes/users.routes.js';
 import { registerPatientRoutes } from './routes/patients.routes.js';
@@ -72,6 +69,7 @@ registerOdontogramRoutes(router);
 registerProductRoutes(router);
 registerOrderRoutes(router);
 registerStatsRoutes(router);
+registerMedicalHistoryRoutes(router);
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

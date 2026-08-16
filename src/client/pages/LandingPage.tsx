@@ -1,9 +1,10 @@
-import Reception from '../components/sections/Reception.tsx';
-import TreatmentTimeline from '../components/sections/TreatmentTimeline.tsx';
-import DentalExplorer from '../components/sections/DentalExplorer.tsx';
-import BookingRoom from '../components/sections/BookingRoom.tsx';
+import { Topbar } from '../components/ui/Topbar.tsx';
+import { Navbar } from '../components/ui/Navbar.tsx';
+import { HeroSection } from '../components/sections/HeroSection.tsx';
+import { WhyChooseUs } from '../components/sections/WhyChooseUs.tsx';
+import { ServicesSection } from '../components/sections/ServicesSection.tsx';
 import { Logo } from '../components/ui/Logo.tsx';
-import { LogIn, Phone, MapPin, Clock } from 'lucide-react';
+import { Phone, MapPin, Clock } from 'lucide-react';
 
 interface LandingPageProps {
   onLogin: () => void;
@@ -12,24 +13,13 @@ interface LandingPageProps {
 export default function LandingPage({ onLogin }: LandingPageProps) {
   return (
     <div className="bg-[#F0F7FF] text-[#1A2E3D] min-h-screen">
-      {/* Fixed nav */}
-      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/80 border-b border-[#D6E8F5]">
-        <div className="max-w mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Logo/>
-          <button
-            onClick={onLogin}
-            className="inline-flex items-center gap-2 bg-white border border-[#D6E8F5] hover:border-[#7CC4EB] hover:bg-[#E8F2FA] transition px-5 py-2.5 rounded-xl text-sm font-semibold text-[#1A2E3D] shadow-sm"
-          >
-            <LogIn className="w-4 h-4 text-[#5AB0E4]" /> Iniciar Sesión
-          </button>
-        </div>
-      </header>
+      <Topbar />
+      <Navbar onLogin={onLogin} />
 
       <main>
-        <Reception />
-        <TreatmentTimeline />
-        <DentalExplorer />
-        <BookingRoom />
+        <HeroSection />
+        <WhyChooseUs />
+        <ServicesSection />
       </main>
 
       {/* Footer */}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, FileText, Save, Stethoscope, User } from 'lucide-react';
+import { Calendar, FileText, Plus, Stethoscope, Trash2, User } from 'lucide-react';
 import { api } from '../../lib/api.ts';
 import OdontogramChart from '../odontogram/OdontogramChart.tsx';
 import { ToothMark } from '../odontogram/ToothSVG.tsx';
@@ -16,6 +16,15 @@ interface HistoriaAppointment {
 
 type Tab = 'resumen' | 'odontograma' | 'citas';
 
+interface MedicalHistory {
+  id: string; patient_id: string; treatment: string;
+  total: number; paid: number; balance: number;
+  signature: string; observations: string; created_at: string;
+}
+
+const formatSoles = (n: number) =>
+  `S/ ${Number(n || 0).toFixed(2)}`;
+
 export default function HistoriaClinica({ patient, appointments, onClose, onSaved }: {
   patient: HistoriaPatient;
   appointments: HistoriaAppointment[];
@@ -23,11 +32,18 @@ export default function HistoriaClinica({ patient, appointments, onClose, onSave
   onSaved: () => void;
 }) {
   const [tab, setTab] = useState<Tab>('resumen');
-  const [notes, setNotes] = useState(patient.notes || '');
-  const [savingNotes, setSavingNotes] = useState(false);
   const [marks, setMarks] = useState<Record<number, ToothMark[]>>({});
   const [marksLoaded, setMarksLoaded] = useState(false);
   const [error, setError] = useState('');
+
+  // Tratamientos / historia médica real
+  const [histories, setHistories] = useState<MedicalHistory[]>([]);
+  const [historiesLoaded, setHistoriesLoaded] = useState(false);
+  const [showNewTreatment, setShowNewTreatment] = useState(false);
+  const [tForm, setTForm] = useState({ treatment: '', total: '', paid: '', signature: '', observations: '' });
+  const [payingId, setPayingId] = useState<string | null>(null);
+  const [payAmount, setPayAmount] = useState('');
+  const [savingHistory, setSavingHistory] = useState(false);
 
   const patientAppointments = appointments.filter(a => a.patient_id === patient.id);
 
@@ -44,22 +60,72 @@ export default function HistoriaClinica({ patient, appointments, onClose, onSave
     }).catch(() => setMarksLoaded(true));
   }, [tab, marksLoaded, patient.id]);
 
-  const saveNotes = async () => {
-    setSavingNotes(true);
+  useEffect(() => {
+    if (tab !== 'resumen' || historiesLoaded) return;
+    api(`/medical-histories/${patient.id}`).then(data => {
+      setHistories(data.histories || []);
+      setHistoriesLoaded(true);
+    }).catch(() => setHistoriesLoaded(true));
+  }, [tab, historiesLoaded, patient.id]);
+
+  const addTreatment = async () => {
+    const total = parseFloat(tForm.total);
+    const paid = parseFloat(tForm.paid || '0') || 0;
+    if (!tForm.treatment.trim()) { setError('Ingresa el nombre del tratamiento.'); return; }
+    if (isNaN(total) || total <= 0) { setError('Ingresa un total válido.'); return; }
+    if (paid > total) { setError('El monto "a cuenta" no puede exceder el total.'); return; }
+    setSavingHistory(true);
     setError('');
     try {
-      await api(`/patients/${patient.id}`, {
-        method: 'PUT',
+      await api('/medical-histories', {
+        method: 'POST',
         body: {
-          name: patient.name, phone: patient.phone, email: patient.email,
-          birth_date: patient.birth_date, notes,
+          patient_id: patient.id,
+          treatment: tForm.treatment.trim(),
+          total,
+          paid,
+          signature: tForm.signature.trim(),
+          observations: tForm.observations.trim(),
         },
       });
+      setTForm({ treatment: '', total: '', paid: '', signature: '', observations: '' });
+      setShowNewTreatment(false);
+      const data = await api(`/medical-histories/${patient.id}`);
+      setHistories(data.histories || []);
       onSaved();
     } catch (e: any) {
-      setError(e.message || 'Error al guardar');
+      setError(e.message || 'Error al guardar el tratamiento.');
     }
-    setSavingNotes(false);
+    setSavingHistory(false);
+  };
+
+  const payTreatment = async (id: string) => {
+    const amount = parseFloat(payAmount);
+    if (isNaN(amount) || amount <= 0) { setError('Ingresa un monto de abono válido.'); return; }
+    setSavingHistory(true);
+    setError('');
+    try {
+      await api(`/medical-histories/${id}`, { method: 'PATCH', body: { paid: amount } });
+      setPayingId(null);
+      setPayAmount('');
+      const data = await api(`/medical-histories/${patient.id}`);
+      setHistories(data.histories || []);
+      onSaved();
+    } catch (e: any) {
+      setError(e.message || 'Error al registrar el abono.');
+    }
+    setSavingHistory(false);
+  };
+
+  const deleteTreatment = async (id: string) => {
+    if (!confirm('¿Eliminar este tratamiento?')) return;
+    try {
+      await api(`/medical-histories/${id}`, { method: 'DELETE' });
+      setHistories(h => h.filter(x => x.id !== id));
+      onSaved();
+    } catch (e: any) {
+      setError(e.message || 'Error al eliminar.');
+    }
   };
 
   const statusColor = (s: string) =>
@@ -88,7 +154,7 @@ export default function HistoriaClinica({ patient, appointments, onClose, onSave
 
         <div className="flex gap-2">
           {([
-            { id: 'resumen', label: 'Resumen', icon: User },
+            { id: 'resumen', label: 'Historia', icon: User },
             { id: 'odontograma', label: 'Odontograma', icon: Stethoscope },
             { id: 'citas', label: `Citas (${patientAppointments.length})`, icon: Calendar },
           ] as { id: Tab; label: string; icon: any }[]).map(t => (
@@ -117,19 +183,110 @@ export default function HistoriaClinica({ patient, appointments, onClose, onSave
                   </div>
                 ))}
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5" /> Historial / Notas
-                </label>
-                <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={5}
-                  placeholder="Historial, tratamientos, alergias..."
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500/40 transition resize-none" />
+
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-400 uppercase flex items-center gap-1.5">
+                  <FileText className="w-3.5 h-3.5" /> Tratamientos realizados
+                </span>
+                <button onClick={() => { setShowNewTreatment(v => !v); setError(''); }}
+                  className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                  <Plus className="w-3.5 h-3.5" /> Nuevo Tratamiento
+                </button>
               </div>
+
               {error && <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 text-xs text-red-300">{error}</div>}
-              <button onClick={saveNotes} disabled={savingNotes}
-                className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 transition disabled:opacity-50">
-                <Save className="w-3.5 h-3.5" /> {savingNotes ? 'Guardando...' : 'Guardar historial'}
-              </button>
+
+              {showNewTreatment && (
+                <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-4 space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <input value={tForm.treatment} onChange={e => setTForm(f => ({ ...f, treatment: e.target.value }))}
+                      placeholder="Tratamiento realizado *"
+                      className="sm:col-span-3 w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500/40" />
+                    <input type="number" min="0" step="0.01" value={tForm.total} onChange={e => setTForm(f => ({ ...f, total: e.target.value }))}
+                      placeholder="Total (S/) *"
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500/40" />
+                    <input type="number" min="0" step="0.01" value={tForm.paid} onChange={e => setTForm(f => ({ ...f, paid: e.target.value }))}
+                      placeholder="A cuenta (S/)"
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500/40" />
+                    <input value={tForm.signature} onChange={e => setTForm(f => ({ ...f, signature: e.target.value }))}
+                      placeholder="Firma del paciente"
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500/40" />
+                    <textarea value={tForm.observations} onChange={e => setTForm(f => ({ ...f, observations: e.target.value }))}
+                      placeholder="Observaciones" rows={2}
+                      className="sm:col-span-3 w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-cyan-500/40 resize-none" />
+                  </div>
+                  <button onClick={addTreatment} disabled={savingHistory}
+                    className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-lg text-xs font-bold transition disabled:opacity-50">
+                    {savingHistory ? 'Guardando...' : 'Guardar tratamiento'}
+                  </button>
+                </div>
+              )}
+
+              {!historiesLoaded ? (
+                <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-10 text-center text-sm text-slate-400">Cargando historia clínica...</div>
+              ) : histories.length === 0 ? (
+                <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-10 text-center text-sm text-slate-400">Sin tratamientos registrados</div>
+              ) : (
+                <div className="overflow-x-auto bg-white/[0.02] border border-white/[0.06] rounded-2xl">
+                  <table className="w-full text-left text-xs min-w-[720px]">
+                    <thead>
+                      <tr className="border-b border-white/[0.06] text-[10px] uppercase text-slate-500">
+                        <th className="px-3 py-2.5">Tratamiento realizado</th>
+                        <th className="px-3 py-2.5 text-right">Total</th>
+                        <th className="px-3 py-2.5 text-right">A cuenta</th>
+                        <th className="px-3 py-2.5 text-right">Saldo</th>
+                        <th className="px-3 py-2.5">Observaciones</th>
+                        <th className="px-3 py-2.5">Firma del paciente</th>
+                        <th className="px-3 py-2.5 text-right">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {histories.map(h => (
+                        <tr key={h.id} className="border-b border-white/[0.04] last:border-0 align-top">
+                          <td className="px-3 py-3">
+                            <span className="font-bold text-white">{h.treatment}</span>
+                            <span className={`ml-1.5 inline-block text-[10px] px-2 py-0.5 rounded-full font-semibold ${h.balance > 0 ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'}`}>
+                              {h.balance > 0 ? 'Pendiente' : 'Pagado'}
+                            </span>
+                          </td>
+                          <td className="px-3 py-3 text-right text-white font-semibold whitespace-nowrap">{formatSoles(h.total)}</td>
+                          <td className="px-3 py-3 text-right text-emerald-300 font-semibold whitespace-nowrap">{formatSoles(h.paid)}</td>
+                          <td className={`px-3 py-3 text-right font-bold whitespace-nowrap ${h.balance > 0 ? 'text-amber-300' : 'text-emerald-300'}`}>{formatSoles(h.balance)}</td>
+                          <td className="px-3 py-3 text-slate-400 max-w-[180px]">{h.observations || '—'}</td>
+                          <td className="px-3 py-3 text-slate-300 italic font-semibold">{h.signature || '—'}</td>
+                          <td className="px-3 py-3">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {h.balance > 0 && (
+                                payingId === h.id ? (
+                                  <div className="flex items-center gap-1.5">
+                                    <input type="number" min="0" step="0.01" autoFocus value={payAmount}
+                                      onChange={e => setPayAmount(e.target.value)}
+                                      placeholder={`S/ ${h.balance.toFixed(2)}`}
+                                      className="w-24 bg-white/[0.04] border border-white/[0.08] rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:ring-2 focus:ring-cyan-500/40" />
+                                    <button onClick={() => payTreatment(h.id)} disabled={savingHistory}
+                                      className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition disabled:opacity-50">
+                                      Abonar
+                                    </button>
+                                    <button onClick={() => { setPayingId(null); setPayAmount(''); }} className="text-slate-400 hover:text-white text-[11px] font-semibold">✕</button>
+                                  </div>
+                                ) : (
+                                  <button onClick={() => { setPayingId(h.id); setPayAmount(''); setError(''); }}
+                                    className="bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold hover:bg-emerald-500/25 transition">
+                                    Abonar
+                                  </button>
+                                )
+                              )}
+                              <button onClick={() => deleteTreatment(h.id)} className="text-red-400 hover:text-red-300 transition" title="Eliminar">
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </motion.div>
           )}
 

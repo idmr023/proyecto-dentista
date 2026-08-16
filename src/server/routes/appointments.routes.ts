@@ -3,6 +3,7 @@ import { getDb } from '../db.js';
 import { requireRole, requireAuth, parseJson, ok, error, created } from '../middleware.js';
 import { appointmentSchema, appointmentStatusSchema } from '../../shared/schemas.js';
 import { randomUUID } from 'crypto';
+import { sendAppointmentNotification } from '../notifications.js';
 
 export function registerAppointmentRoutes(router: any) {
   // GET /api/appointments
@@ -43,7 +44,7 @@ export function registerAppointmentRoutes(router: any) {
     const { patient_id, service, appointment_date, appointment_time, notes } = parsed.data;
     const db = getDb();
 
-    const patient = await db.get('SELECT id, user_id FROM patients WHERE id = ?', patient_id) as { id: string; user_id: string | null } | null;
+    const patient = await db.get('SELECT id, user_id, email, name, phone FROM patients WHERE id = ?', patient_id) as { id: string; user_id: string | null; email: string; name: string; phone: string } | null;
     if (!patient) { error(res, 404, 'Paciente no encontrado.'); return; }
 
     if (user.role === 'cliente' && patient.user_id !== user.sub) {
@@ -61,6 +62,16 @@ export function registerAppointmentRoutes(router: any) {
       'INSERT INTO appointments (id, patient_id, service, appointment_date, appointment_time, notes) VALUES (?, ?, ?, ?, ?, ?)',
       id, patient_id, service, appointment_date, appointment_time, notes || ''
     );
+
+    const dentist = await db.get('SELECT id, email, name FROM users WHERE role = ? AND is_active = 1', 'admin') as { id: string; email: string; name: string };
+
+    if (dentist) {
+      await sendAppointmentNotification(
+        { id, patient_id, service, appointment_date, appointment_time, status: 'pendiente', notes },
+        patient,
+        dentist
+      );
+    }
 
     const appt = await db.get(`
       SELECT a.*, p.name as patient_name, p.phone as patient_phone

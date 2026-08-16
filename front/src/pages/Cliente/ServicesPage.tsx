@@ -60,7 +60,7 @@ export default function ServicesPage() {
           </div>
           <div>
             <p className="text-xs font-bold text-[#5A7A94] uppercase">WhatsApp</p>
-            <p className="text-sm font-medium text-[#1A2E3D]">+51 970 998 860</p>
+            <p className="text-sm font-medium text-[#1A2E3D]">+51 947 499 397</p>
           </div>
         </div>
         <div className="bg-white border border-[#D6E8F5] rounded-2xl p-5 flex items-center gap-4">

@@ -9,7 +9,7 @@ interface ToothZone {
   icon: string;
 }
 
-const zones: ToothZone[] = [
+export const zones: ToothZone[] = [
   {
     id: 'frontales',
     label: 'Dientes Frontales',
@@ -47,7 +47,7 @@ const zones: ToothZone[] = [
   },
 ];
 
-const zoneColors: Record<string, { base: string; lit: string; glow: string; grad: [string, string] }> = {
+export const zoneColors: Record<string, { base: string; lit: string; glow: string; grad: [string, string] }> = {
   frontales: { base: '#E8F2FA', lit: '#5AB0E4', glow: '#7CC4EB', grad: ['#7CC4EB', '#5AB0E4'] },
   muelas:    { base: '#E8F2FA', lit: '#945A7A', glow: '#F4A6C9', grad: ['#945A7A', '#F4A6C9'] },
   encias:    { base: '#E8F2FA', lit: '#34D399', glow: '#10B981', grad: ['#059669', '#34D399'] },
@@ -56,7 +56,7 @@ const zoneColors: Record<string, { base: string; lit: string; glow: string; grad
 };
 
 /* --- Anatomical Tooth Paths --- */
-function Incisor({ cx, cy, zone, active }: { cx: number; cy: number; zone: string; active: boolean }) {
+export function Incisor({ cx, cy, zone, active }: { cx: number; cy: number; zone: string; active: boolean }) {
   const c = zoneColors[zone];
   const id = `inc-${cx}-${cy}`;
   return (
@@ -91,7 +91,7 @@ function Incisor({ cx, cy, zone, active }: { cx: number; cy: number; zone: strin
   );
 }
 
-function Canine({ cx, cy, zone, active }: { cx: number; cy: number; zone: string; active: boolean }) {
+export function Canine({ cx, cy, zone, active }: { cx: number; cy: number; zone: string; active: boolean }) {
   const c = zoneColors[zone];
   const id = `can-${cx}-${cy}`;
   return (
@@ -123,7 +123,7 @@ function Canine({ cx, cy, zone, active }: { cx: number; cy: number; zone: string
   );
 }
 
-function Molar({ cx, cy, zone, active }: { cx: number; cy: number; zone: string; active: boolean }) {
+export function Molar({ cx, cy, zone, active }: { cx: number; cy: number; zone: string; active: boolean }) {
   const c = zoneColors[zone];
   const id = `mol-${cx}-${cy}`;
   return (
@@ -186,7 +186,7 @@ function Molar({ cx, cy, zone, active }: { cx: number; cy: number; zone: string;
   );
 }
 
-function Premolar({ cx, cy, zone, active }: { cx: number; cy: number; zone: string; active: boolean }) {
+export function Premolar({ cx, cy, zone, active }: { cx: number; cy: number; zone: string; active: boolean }) {
   const c = zoneColors[zone];
   const id = `pre-${cx}-${cy}`;
   return (
@@ -232,7 +232,7 @@ function Premolar({ cx, cy, zone, active }: { cx: number; cy: number; zone: stri
 }
 
 /* --- Data --- */
-const upperTeeth = [
+export const upperTeeth = [
   { x: 35,  zone: 'muelas',     label: '18', type: 'molar' as const },
   { x: 80,  zone: 'muelas',     label: '17', type: 'molar' as const },
   { x: 125, zone: 'muelas',     label: '16', type: 'molar' as const },
@@ -251,7 +251,7 @@ const upperTeeth = [
   { x: 645, zone: 'muelas',     label: '28', type: 'molar' as const },
 ];
 
-const lowerTeeth = [
+export const lowerTeeth = [
   { x: 35,  zone: 'muelas',     label: '48', type: 'molar' as const },
   { x: 80,  zone: 'muelas',     label: '47', type: 'molar' as const },
   { x: 125, zone: 'muelas',     label: '46', type: 'molar' as const },
@@ -270,7 +270,7 @@ const lowerTeeth = [
   { x: 645, zone: 'muelas',     label: '38', type: 'molar' as const },
 ];
 
-function ToothByType({ cx, cy, type, zone, active }: {
+export function ToothByType({ cx, cy, type, zone, active }: {
   cx: number; cy: number; type: 'incisor' | 'canine' | 'premolar' | 'molar'; zone: string; active: boolean;
 }) {
   if (type === 'incisor') return <Incisor cx={cx} cy={cy} zone={zone} active={active} />;

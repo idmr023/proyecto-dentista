@@ -83,6 +83,18 @@ export async function initDb() {
       FOREIGN KEY (patient_id) REFERENCES patients(id)
     );
 
+    CREATE TABLE IF NOT EXISTS medical_histories (
+      id TEXT PRIMARY KEY,
+      patient_id TEXT NOT NULL,
+      treatment TEXT NOT NULL,
+      paid REAL NOT NULL DEFAULT 0,
+      total REAL NOT NULL,
+      signature_url TEXT DEFAULT '',
+      observations TEXT DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT (NOW() AT TIME ZONE 'utc')::text,
+      FOREIGN KEY (patient_id) REFERENCES patients(id)
+    );
+
     CREATE TABLE IF NOT EXISTS products (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,

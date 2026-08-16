@@ -41,7 +41,7 @@ export default function BookingRoom() {
       `⏰ Hora: ${form.time}` +
       (form.notes ? `\n📝 Notas: ${form.notes}` : '')
     );
-    window.open(`https://wa.me/51970998860?text=${message}`, '_blank');
+    window.open(`https://wa.me/51947499397?text=${message}`, '_blank');
 
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);
@@ -133,7 +133,7 @@ export default function BookingRoom() {
                 type="tel"
                 value={form.phone}
                 onChange={e => setForm({ ...form, phone: e.target.value })}
-                placeholder="Ej: +51 970 998 860"
+                placeholder="Ej: +51 947 499 397"
                 className="w-full bg-[#F0F7FF] border border-[#D6E8F5] rounded-xl px-4 py-3.5 text-sm text-[#1A2E3D] placeholder:text-[#5A7A94]/60 outline-none focus:ring-2 focus:ring-[#7CC4EB]/40 focus:border-[#7CC4EB] transition-all"
               />
             </div>
@@ -247,7 +247,7 @@ export default function BookingRoom() {
                   </div>
                   <div>
                     <span className="text-xs text-[#5A7A94] block">WhatsApp / Llamada</span>
-                    <span className="text-sm text-[#1A2E3D] font-semibold">+51 970 998 860</span>
+                    <span className="text-sm text-[#1A2E3D] font-semibold">+51 947 499 397</span>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -288,7 +288,7 @@ export default function BookingRoom() {
 
             {/* CTA WhatsApp */}
             <motion.a
-              href="https://wa.me/51970998860"
+              href="https://wa.me/51947499397"
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.02 }}
